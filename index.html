@@ -9,17 +9,39 @@
 </head>
 <body>
 
+    <div class="menu-icon" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+    </div>
+
+    <div id="nav-overlay" class="overlay">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
+        <div class="overlay-content">
+            <h2>Pilih Fantasi</h2>
+            <a href="#" onclick="filterCategory('Suami')">1. Suami</a>
+            <a href="#" onclick="filterCategory('Teman Suami')">2. Teman Suami</a>
+            <a href="#" onclick="filterCategory('3s')">3. 3S (Threesome)</a>
+            <a href="#" onclick="filterCategory('Mertua')">4. Ayah Mertua</a>
+            <hr class="menu-hr">
+            <a href="#" onclick="fetchAllStories(); toggleMenu();" class="show-all">Tampilkan Semua</a>
+        </div>
+    </div>
+
     <div class="container">
         <header>
-            <h1 id="title">Memuat Cerita...</h1>
-            <div class="meta" id="meta-info">Special Collection • Private Access</div>
+            <h1 id="title">Menyiapkan Suasana...</h1>
+            <div class="meta" id="meta-info">Private Access • Midnight Edition</div>
         </header>
 
         <article class="story-content" id="content">
-            <p style="text-align:center;">Menyiapkan suasana...</p>
+            <p style="text-align:center;">Membuka lembaran cerita...</p>
         </article>
 
-        <div class="divider">✦ ✦ ✦</div>
+        <div class="navigation">
+            <button id="prev-btn" onclick="prevStory()">← Sebelumnya</button>
+            <span id="page-info">0 / 0</span>
+            <button id="next-btn" onclick="nextStory()">Berikutnya →</button>
+        </div>
 
         <footer>
             &copy; 2026 Midnight Stories - Created for Your Private Nights
@@ -28,4 +50,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
+    </html>
+    
