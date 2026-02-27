@@ -1,15 +1,15 @@
-/* MIDNIGHT AFFAIRS - MODERN iOS NAVY 
-   Theme: Premium, Minimalist, Dark Mode
+/* MIDNIGHT AFFAIRS - MODERN LIGHT iOS
+   Theme: Whitesmoke & Navy Accents
 */
 
 :root {
-    --bg-color: #040d1a;       /* Super Deep Navy Black */
-    --card-color: #0a192f;     /* Navy Card Background */
-    --accent-color: #2e66ff;   /* iOS Classic Blue */
-    --gold-text: #f1d279;      /* Elegant Muted Gold */
-    --text-primary: #ffffff;   /* Pure White */
-    --text-secondary: #8b9bb4; /* Muted Blueish Gray */
-    --border-color: rgba(255, 255, 255, 0.08);
+    --bg-color: #f5f5f5;       /* Whitesmoke Background */
+    --card-color: #ffffff;     /* Putih bersih untuk Card/Sheet */
+    --accent-color: #007aff;   /* iOS Blue yang lebih cerah */
+    --gold-accent: #b89344;    /* Gold yang lebih deep untuk Light Mode */
+    --text-primary: #1c1c1e;   /* Hitam tipikal Apple (tidak pekat) */
+    --text-secondary: #636366; /* Abu-abu Apple */
+    --border-color: rgba(0, 0, 0, 0.1);
     --safe-area-bottom: env(safe-area-inset-bottom, 20px);
 }
 
@@ -25,22 +25,22 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.75;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-    padding-top: 70px;    /* Space for Top Bar */
-    padding-bottom: 120px; /* Space for Floating Nav */
+    padding-top: 70px;
+    padding-bottom: 120px;
 }
 
-/* 2. TOP BAR (iPhone Header) */
+/* 2. TOP BAR (Light Blur) */
 .top-bar {
     position: fixed;
     top: 0; left: 0; width: 100%;
     height: 70px;
-    background: rgba(4, 13, 26, 0.85);
-    backdrop-filter: blur(15px); /* iOS Blur Effect */
-    -webkit-backdrop-filter: blur(15px);
+    background: rgba(245, 245, 245, 0.8); /* Whitesmoke Transparan */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -58,7 +58,6 @@ body {
 .top-bar h1 {
     font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: -0.5px;
     color: var(--text-primary);
 }
 
@@ -66,11 +65,6 @@ body {
     font-size: 1.3rem;
     color: var(--text-primary);
     cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.menu-trigger:active {
-    transform: scale(0.9);
 }
 
 /* 3. MAIN APP CONTAINER */
@@ -78,12 +72,6 @@ body {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    animation: fadeInApp 1s ease-out;
-}
-
-.meta-container { 
-    text-align: center; 
-    margin-bottom: 20px; 
 }
 
 .meta {
@@ -92,36 +80,31 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 600;
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* 4. STORY CONTENT (Justified & Elegant) */
+/* 4. STORY CONTENT (Justified) */
 .story-content {
     font-size: 1.15rem;
     color: var(--text-primary);
     text-align: justify;
     text-justify: inter-word;
-    font-weight: 400;
 }
 
 .story-content p {
     margin-bottom: 22px;
 }
 
-/* Gaya Dialog atau Narasi Penting */
+/* Gold Highlight untuk adegan penting */
 .story-content i, .story-content em {
-    color: var(--gold-text);
+    color: var(--gold-accent);
     font-style: italic;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-.loading-state { 
-    text-align: center; 
-    color: var(--text-secondary); 
-    padding: 60px 0; 
-    font-size: 0.9rem;
-}
-
-/* 5. FLOATING NAVIGATION (Bottom Capsule) */
+/* 5. FLOATING NAVIGATION (White Capsule) */
 .floating-nav {
     position: fixed;
     bottom: var(--safe-area-bottom);
@@ -130,7 +113,7 @@ body {
     width: 90%; 
     max-width: 380px;
     height: 64px;
-    background: rgba(10, 25, 47, 0.9);
+    background: rgba(255, 255, 255, 0.9); /* Capsule Putih */
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border-radius: 32px;
@@ -139,7 +122,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     z-index: 900;
 }
 
@@ -154,11 +137,6 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.1s ease;
-}
-
-.floating-nav button:active:not(:disabled) { 
-    transform: scale(0.85); 
 }
 
 .floating-nav button:disabled { 
@@ -169,15 +147,14 @@ body {
 #page-info { 
     font-size: 0.85rem; 
     color: var(--text-secondary); 
-    font-weight: 600; 
-    letter-spacing: 1px;
+    font-weight: 700;
 }
 
-/* 6. iOS ACTION SHEET (Slide-Up Menu) */
+/* 6. iOS ACTION SHEET (Menu dari Bawah) */
 .overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 2000;
     visibility: hidden;
     opacity: 0;
@@ -198,83 +175,48 @@ body {
     padding: 15px 20px calc(var(--safe-area-bottom) + 15px);
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.32, 1, 0.67, 1);
-    max-height: 85%;
-    overflow-y: auto;
 }
 
 .overlay.open .overlay-sheet { 
     transform: translateY(0); 
 }
 
-.sheet-header { 
-    text-align: center; 
-    margin-bottom: 25px; 
-}
-
 .handle {
     width: 36px; height: 5px;
-    background-color: rgba(255,255,255,0.15);
+    background-color: rgba(0,0,0,0.1);
     border-radius: 3px; 
     margin: 0 auto 15px;
 }
 
-.sheet-header h2 {
-    color: var(--text-primary);
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-
-/* MENU BUTTONS WITH ICONS */
 .overlay-content button {
     width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border-color);
+    background: #f2f2f7; /* iOS secondary system fill */
+    border: none;
     color: var(--text-primary);
     padding: 18px 20px;
     margin-bottom: 12px;
     border-radius: 16px;
     font-size: 1.05rem;
-    font-weight: 500;
+    font-weight: 600;
     text-align: left;
     display: flex;
     align-items: center;
-    cursor: pointer;
-    transition: background 0.2s;
 }
 
 .overlay-content button i {
     width: 30px;
-    color: var(--gold-text);
+    color: var(--accent-color); /* Ikon jadi biru iOS */
     font-size: 1.1rem;
-}
-
-.overlay-content button:active { 
-    background: rgba(255,255,255,0.12); 
-}
-
-.menu-hr { 
-    border: none; 
-    border-top: 1px solid var(--border-color); 
-    margin: 15px 0; 
 }
 
 .show-all {
     background: transparent !important;
-    border: none !important;
     color: var(--accent-color) !important;
     justify-content: center !important;
-    font-weight: 700 !important;
 }
 
-/* ANIMATIONS */
-@keyframes fadeInApp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Selection Color */
+::selection {
+    background: var(--accent-color);
+    color: white;
 }
-
-/* RESPONSIVE */
-@media (max-width: 600px) {
-    .top-bar { padding: 0 20px; }
-    .story-content { font-size: 1.1rem; }
-    }
-    
