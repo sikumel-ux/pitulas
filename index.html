@@ -1,9 +1,21 @@
+<!DOCTYPE html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Midnight Affair</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-
 <body>
+
     <header class="top-bar">
         <div class="time-mock">9:41</div>
         <h1 id="title">Midnight</h1>
@@ -11,6 +23,19 @@
             <i class="fa-solid fa-bars-staggered"></i>
         </div>
     </header>
+
+    <main class="app-container">
+        <div class="meta-container">
+            <span class="meta" id="meta-info">Private Access</span>
+        </div>
+
+        <article class="story-content" id="content">
+            <div class="loading-state">
+                <i class="fa-solid fa-circle-notch fa-spin"></i><br><br>
+                Membuka lembaran cerita...
+            </div>
+        </article>
+    </main>
 
     <div class="floating-nav">
         <button id="prev-btn" onclick="prevStory()" disabled>
@@ -21,5 +46,38 @@
             <i class="fa-solid fa-chevron-right"></i>
         </button>
     </div>
-    
+
+    <div id="nav-overlay" class="overlay" onclick="closeMenu(event)">
+        <div class="overlay-sheet">
+            <div class="sheet-header">
+                <div class="handle"></div>
+                <h2>Pilih Fantasi</h2>
+            </div>
+            
+            <div class="overlay-content">
+                <button onclick="filterCategory('Suami')">
+                    <i class="fa-solid fa-heart"></i> 1. Suami
+                </button>
+                <button onclick="filterCategory('Teman Suami')">
+                    <i class="fa-solid fa-user-group"></i> 2. Teman Suami
+                </button>
+                <button onclick="filterCategory('3s')">
+                    <i class="fa-solid fa-fire-flame-curved"></i> 3. 3S (Threesome)
+                </button>
+                <button onclick="filterCategory('Mertua')">
+                    <i class="fa-solid fa-crown"></i> 4. Ayah Mertua
+                </button>
+                
+                <hr class="menu-hr">
+                
+                <button onclick="fetchAllStories(); toggleMenu();" class="show-all">
+                    Tampilkan Semua Cerita
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
+                        </html>
+                        
