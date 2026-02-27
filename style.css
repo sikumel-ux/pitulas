@@ -1,83 +1,102 @@
+/* MIDNIGHT AFFAIRS - MODERN iOS NAVY 
+   Theme: Premium, Minimalist, Dark Mode
+*/
+
 :root {
     --bg-color: #040d1a;       /* Super Deep Navy Black */
-    --card-color: #0a192f;     /* Navy Card */
-    --accent-color: #2e66ff;   /* iOS Blue Accent */
-    --gold-text: #f1d279;      /* Gold tetap untuk highlight mewah */
-    --text-primary: #ffffff;
-    --text-secondary: #8b9bb4;
+    --card-color: #0a192f;     /* Navy Card Background */
+    --accent-color: #2e66ff;   /* iOS Classic Blue */
+    --gold-text: #f1d279;      /* Elegant Muted Gold */
+    --text-primary: #ffffff;   /* Pure White */
+    --text-secondary: #8b9bb4; /* Muted Blueish Gray */
     --border-color: rgba(255, 255, 255, 0.08);
     --safe-area-bottom: env(safe-area-inset-bottom, 20px);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+/* 1. RESET & GLOBAL STYLES */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    outline: none; 
+    -webkit-tap-highlight-color: transparent; 
+}
 
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* Font iOS feel */
-    line-height: 1.7;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.75;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-    padding-top: 60px; /* Space for TopBar */
-    padding-bottom: 100px; /* Space for FloatingNav */
+    padding-top: 70px;    /* Space for Top Bar */
+    padding-bottom: 120px; /* Space for Floating Nav */
 }
 
-/* 1. TOP BAR (iPhone Style) */
+/* 2. TOP BAR (iPhone Header) */
 .top-bar {
     position: fixed;
-    top: 0; width: 100%;
-    height: 60px;
-    background: rgba(4, 13, 26, 0.9);
-    backdrop-filter: blur(10px); /* Efek blur iOS */
+    top: 0; left: 0; width: 100%;
+    height: 70px;
+    background: rgba(4, 13, 26, 0.85);
+    backdrop-filter: blur(15px); /* iOS Blur Effect */
+    -webkit-backdrop-filter: blur(15px);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 25px;
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
 }
 
-.time-mock { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; }
+.time-mock { 
+    font-weight: 700; 
+    color: var(--text-primary); 
+    font-size: 0.95rem; 
+}
 
 .top-bar h1 {
     font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: -0.5px;
     color: var(--text-primary);
-    text-align: center;
 }
 
-.menu-icon {
-    display: flex; flex-direction: column;
-    justify-content: space-between;
-    width: 22px; height: 14px; cursor: pointer;
+.menu-trigger {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
-.menu-icon span {
-    display: block; width: 100%; height: 2px;
-    background-color: var(--text-primary);
-    border-radius: 2px;
+.menu-trigger:active {
+    transform: scale(0.9);
 }
 
-/* 2. MAIN CONTAINER */
+/* 3. MAIN APP CONTAINER */
 .app-container {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
+    animation: fadeInApp 1s ease-out;
 }
 
-.meta-container { text-align: center; margin-bottom: 15px; }
+.meta-container { 
+    text-align: center; 
+    margin-bottom: 20px; 
+}
+
 .meta {
     font-size: 0.75rem;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* 3. STORY CONTENT (Modern Justify) */
+/* 4. STORY CONTENT (Justified & Elegant) */
 .story-content {
-    font-size: 1.15rem; /* Ukuran teks modern, tidak terlalu besar */
+    font-size: 1.15rem;
     color: var(--text-primary);
     text-align: justify;
     text-justify: inter-word;
@@ -88,32 +107,39 @@ body {
     margin-bottom: 22px;
 }
 
-/* Highlight Gold untuk narasi panas */
+/* Gaya Dialog atau Narasi Penting */
 .story-content i, .story-content em {
     color: var(--gold-text);
     font-style: italic;
     font-weight: 500;
 }
 
-.loading-state { text-align: center; color: var(--text-secondary); padding: 40px 0; }
+.loading-state { 
+    text-align: center; 
+    color: var(--text-secondary); 
+    padding: 60px 0; 
+    font-size: 0.9rem;
+}
 
-/* 4. FLOATING NAVIGATION (Bouncy iOS) */
+/* 5. FLOATING NAVIGATION (Bottom Capsule) */
 .floating-nav {
     position: fixed;
     bottom: var(--safe-area-bottom);
     left: 50%;
     transform: translateX(-50%);
-    width: 90%; max-width: 400px;
-    height: 60px;
-    background: rgba(10, 25, 47, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 30px; /* Round */
+    width: 90%; 
+    max-width: 380px;
+    height: 64px;
+    background: rgba(10, 25, 47, 0.9);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 32px;
     border: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
     z-index: 900;
 }
 
@@ -121,83 +147,134 @@ body {
     background: transparent;
     border: none;
     color: var(--accent-color);
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    padding: 10px 15px;
     transition: transform 0.1s ease;
 }
 
-.floating-nav button:active:not(:disabled) { transform: scale(0.9); } /* iOS bounce effect */
-.floating-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+.floating-nav button:active:not(:disabled) { 
+    transform: scale(0.85); 
+}
 
-#page-info { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; }
+.floating-nav button:disabled { 
+    color: var(--text-secondary); 
+    opacity: 0.2; 
+}
 
-/* 5. iOS ACTION SHEET MENU (Slide Up) */
+#page-info { 
+    font-size: 0.85rem; 
+    color: var(--text-secondary); 
+    font-weight: 600; 
+    letter-spacing: 1px;
+}
+
+/* 6. iOS ACTION SHEET (Slide-Up Menu) */
 .overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.6);
     z-index: 2000;
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.3s ease;
-    display: flex; align-items: flex-end; /* Align bottom */
+    display: flex; 
+    align-items: flex-end;
 }
 
-.overlay.open { visibility: visible; opacity: 1; }
+.overlay.open { 
+    visibility: visible; 
+    opacity: 1; 
+}
 
 .overlay-sheet {
     width: 100%;
     background-color: var(--card-color);
-    border-radius: 20px 20px 0 0; /* Rounded Top */
-    padding: 15px 20px (var(--safe-area-bottom) + 10px);
+    border-radius: 25px 25px 0 0;
+    padding: 15px 20px calc(var(--safe-area-bottom) + 15px);
     transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.32, 1, 0.67, 1); /* iOS Easing */
-    max-height: 80%; overflow-y: auto;
+    transition: transform 0.4s cubic-bezier(0.32, 1, 0.67, 1);
+    max-height: 85%;
+    overflow-y: auto;
 }
 
-.overlay.open .overlay-sheet { transform: translateY(0); }
+.overlay.open .overlay-sheet { 
+    transform: translateY(0); 
+}
 
-.sheet-header { text-align: center; margin-bottom: 20px; }
+.sheet-header { 
+    text-align: center; 
+    margin-bottom: 25px; 
+}
+
 .handle {
-    width: 40px; height: 5px;
-    background-color: rgba(255,255,255,0.1);
-    border-radius: 3px; margin: 0 auto 15px;
+    width: 36px; height: 5px;
+    background-color: rgba(255,255,255,0.15);
+    border-radius: 3px; 
+    margin: 0 auto 15px;
 }
+
 .sheet-header h2 {
     color: var(--text-primary);
     font-size: 1.2rem;
     font-weight: 700;
 }
 
+/* MENU BUTTONS WITH ICONS */
 .overlay-content button {
     width: 100%;
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.04);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 16px;
-    margin-bottom: 10px;
-    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    border-radius: 16px;
     font-size: 1.05rem;
     font-weight: 500;
     text-align: left;
+    display: flex;
+    align-items: center;
     cursor: pointer;
     transition: background 0.2s;
 }
 
-.overlay-content button:active { background: rgba(255,255,255,0.1); } /* iOS Touch Feedback */
+.overlay-content button i {
+    width: 30px;
+    color: var(--gold-text);
+    font-size: 1.1rem;
+}
 
-.menu-hr { border: none; border-top: 1px solid var(--border-color); margin: 15px 0; }
+.overlay-content button:active { 
+    background: rgba(255,255,255,0.12); 
+}
+
+.menu-hr { 
+    border: none; 
+    border-top: 1px solid var(--border-color); 
+    margin: 15px 0; 
+}
+
 .show-all {
     background: transparent !important;
     border: none !important;
     color: var(--accent-color) !important;
-    text-align: center !important;
-    font-weight: 600 !important;
+    justify-content: center !important;
+    font-weight: 700 !important;
 }
 
-/* Responsive Font */
+/* ANIMATIONS */
+@keyframes fadeInApp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
 @media (max-width: 600px) {
+    .top-bar { padding: 0 20px; }
     .story-content { font-size: 1.1rem; }
-        }
+    }
+    
