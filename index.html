@@ -1,56 +1,25 @@
-<!DOCTYPE html>
-<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Midnight Affair</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
+<body>
     <header class="top-bar">
         <div class="time-mock">9:41</div>
         <h1 id="title">Midnight</h1>
-        <div class="menu-icon" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
+        <div class="menu-trigger" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars-staggered"></i>
         </div>
     </header>
 
-    <main class="app-container">
-        <div class="meta-container">
-            <span class="meta" id="meta-info">Private Collection</span>
-        </div>
-
-        <article class="story-content" id="content">
-            <div class="loading-state">Membuka lembaran...</div>
-        </article>
-    </main>
-
     <div class="floating-nav">
-        <button id="prev-btn" onclick="prevStory()" disabled>← Previous</button>
+        <button id="prev-btn" onclick="prevStory()" disabled>
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
         <span id="page-info">0 / 0</span>
-        <button id="next-btn" onclick="nextStory()" disabled>Next →</button>
+        <button id="next-btn" onclick="nextStory()" disabled>
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
     </div>
-
-    <div id="nav-overlay" class="overlay" onclick="closeMenu(event)">
-        <div class="overlay-sheet">
-            <div class="sheet-header">
-                <div class="handle"></div>
-                <h2>Pilih Fantasi</h2>
-            </div>
-            <div class="overlay-content">
-                <button onclick="filterCategory('Suami')">1. Suami</button>
-                <button onclick="filterCategory('Teman Suami')">2. Teman Suami</button>
-                <button onclick="filterCategory('3s')">3. 3S (Threesome)</button>
-                <button onclick="filterCategory('Mertua')">4. Ayah Mertua</button>
-                <hr class="menu-hr">
-                <button onclick="fetchAllStories(); toggleMenu();" class="show-all">Tampilkan Semua</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    
 </body>
-</html>
