@@ -1,222 +1,84 @@
-/* MIDNIGHT AFFAIRS - MODERN LIGHT iOS
-   Theme: Whitesmoke & Navy Accents
-*/
-
 :root {
-    --bg-color: #f5f5f5;       /* Whitesmoke Background */
-    --card-color: #ffffff;     /* Putih bersih untuk Card/Sheet */
-    --accent-color: #007aff;   /* iOS Blue yang lebih cerah */
-    --gold-accent: #b89344;    /* Gold yang lebih deep untuk Light Mode */
-    --text-primary: #1c1c1e;   /* Hitam tipikal Apple (tidak pekat) */
-    --text-secondary: #636366; /* Abu-abu Apple */
-    --border-color: rgba(0, 0, 0, 0.1);
-    --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+    /* Light Mode (Whitesmoke) */
+    --bg-color: #f5f5f7;
+    --card-bg: #ffffff;
+    --text-main: #1d1d1f;
+    --text-sub: #86868b;
+    --accent: #007aff;
+    --border: rgba(0,0,0,0.1);
+    --tab-bg: rgba(255, 255, 255, 0.8);
 }
 
-/* 1. RESET & GLOBAL STYLES */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-    outline: none; 
-    -webkit-tap-highlight-color: transparent; 
+body.dark-mode {
+    --bg-color: #000000;
+    --card-bg: #1c1c1e;
+    --text-main: #f5f5f7;
+    --text-sub: #a1a1a6;
+    --accent: #0a84ff;
+    --border: rgba(255,255,255,0.1);
+    --tab-bg: rgba(28, 28, 30, 0.8);
 }
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 body {
     background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.75;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-    padding-top: 70px;
-    padding-bottom: 120px;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.3s, color 0.3s;
+    padding-bottom: 100px; /* Space for Tab Bar */
 }
 
-/* 2. TOP BAR (Light Blur) */
+/* TOP BAR */
 .top-bar {
-    position: fixed;
-    top: 0; left: 0; width: 100%;
-    height: 70px;
-    background: rgba(245, 245, 245, 0.8); /* Whitesmoke Transparan */
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 25px;
-    border-bottom: 1px solid var(--border-color);
+    position: fixed; top: 0; width: 100%; height: 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 20px; z-index: 100;
+    background: var(--bg-color); border-bottom: 1px solid var(--border);
+}
+
+.theme-toggle { font-size: 1.2rem; cursor: pointer; color: var(--accent); }
+
+/* CONTENT */
+.app-container { max-width: 600px; margin: 80px auto 20px; padding: 0 20px; }
+.story-content { text-align: justify; line-height: 1.8; font-size: 1.15rem; }
+
+/* TAB BAR (NAVBAR BAWAH) */
+.tab-bar {
+    position: fixed; bottom: 0; width: 100%; height: 70px;
+    background: var(--tab-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    display: flex; justify-content: space-around; align-items: center;
+    border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom);
     z-index: 1000;
 }
 
-.time-mock { 
-    font-weight: 700; 
-    color: var(--text-primary); 
-    font-size: 0.95rem; 
-}
+.tab-item { text-align: center; color: var(--text-sub); cursor: pointer; flex: 1; }
+.tab-item i { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+.tab-item span { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
+.tab-item:active { color: var(--accent); transform: scale(0.9); transition: 0.1s; }
 
-.top-bar h1 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.menu-trigger {
-    font-size: 1.3rem;
-    color: var(--text-primary);
-    cursor: pointer;
-}
-
-/* 3. MAIN APP CONTAINER */
-.app-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.meta {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 600;
-    display: block;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* 4. STORY CONTENT (Justified) */
-.story-content {
-    font-size: 1.15rem;
-    color: var(--text-primary);
-    text-align: justify;
-    text-justify: inter-word;
-}
-
-.story-content p {
-    margin-bottom: 22px;
-}
-
-/* Gold Highlight untuk adegan penting */
-.story-content i, .story-content em {
-    color: var(--gold-accent);
-    font-style: italic;
-    font-weight: 600;
-}
-
-/* 5. FLOATING NAVIGATION (White Capsule) */
-.floating-nav {
-    position: fixed;
-    bottom: var(--safe-area-bottom);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%; 
-    max-width: 380px;
-    height: 64px;
-    background: rgba(255, 255, 255, 0.9); /* Capsule Putih */
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 32px;
-    border: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    z-index: 900;
-}
-
-.floating-nav button {
-    background: transparent;
-    border: none;
-    color: var(--accent-color);
-    font-size: 1.2rem;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.floating-nav button:disabled { 
-    color: var(--text-secondary); 
-    opacity: 0.2; 
-}
-
-#page-info { 
-    font-size: 0.85rem; 
-    color: var(--text-secondary); 
-    font-weight: 700;
-}
-
-/* 6. iOS ACTION SHEET (Menu dari Bawah) */
+/* ACTION SHEET */
 .overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 2000;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    display: flex; 
-    align-items: flex-end;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 2000;
+    visibility: hidden; opacity: 0; transition: 0.3s;
+    display: flex; align-items: flex-end;
 }
+.overlay.active { visibility: visible; opacity: 1; }
 
-.overlay.open { 
-    visibility: visible; 
-    opacity: 1; 
+.sheet-container {
+    width: 100%; background: var(--card-bg); border-radius: 20px 20px 0 0;
+    padding: 20px; transform: translateY(100%); transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
+.overlay.active .sheet-container { transform: translateY(0); }
 
-.overlay-sheet {
-    width: 100%;
-    background-color: var(--card-color);
-    border-radius: 25px 25px 0 0;
-    padding: 15px 20px calc(var(--safe-area-bottom) + 15px);
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.32, 1, 0.67, 1);
-}
+.handle { width: 40px; height: 5px; background: var(--border); border-radius: 3px; margin: 0 auto 20px; }
+.sheet-container h2 { font-size: 1.2rem; margin-bottom: 15px; text-align: center; }
 
-.overlay.open .overlay-sheet { 
-    transform: translateY(0); 
+.story-list button {
+    width: 100%; padding: 15px; margin-bottom: 10px; border: none;
+    background: var(--bg-color); color: var(--text-main);
+    border-radius: 12px; text-align: left; font-size: 1rem; font-weight: 500;
 }
-
-.handle {
-    width: 36px; height: 5px;
-    background-color: rgba(0,0,0,0.1);
-    border-radius: 3px; 
-    margin: 0 auto 15px;
-}
-
-.overlay-content button {
-    width: 100%;
-    background: #f2f2f7; /* iOS secondary system fill */
-    border: none;
-    color: var(--text-primary);
-    padding: 18px 20px;
-    margin-bottom: 12px;
-    border-radius: 16px;
-    font-size: 1.05rem;
-    font-weight: 600;
-    text-align: left;
-    display: flex;
-    align-items: center;
-}
-
-.overlay-content button i {
-    width: 30px;
-    color: var(--accent-color); /* Ikon jadi biru iOS */
-    font-size: 1.1rem;
-}
-
-.show-all {
-    background: transparent !important;
-    color: var(--accent-color) !important;
-    justify-content: center !important;
-}
-
-/* Selection Color */
-::selection {
-    background: var(--accent-color);
-    color: white;
-}
+.story-list button:active { background: var(--border); }
+   
