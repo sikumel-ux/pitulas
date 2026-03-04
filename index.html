@@ -4,80 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Midnight Affair</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
     <link rel="stylesheet" href="style.css">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-<body>
-
-    <header class="top-bar">
-        <div class="time-mock">9:41</div>
-        <h1 id="title">Midnight</h1>
-        <div class="menu-trigger" onclick="toggleMenu()">
-            <i class="fa-solid fa-bars-staggered"></i>
+<body class="light-mode"> <header class="top-bar">
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
         </div>
+        <h1 id="top-title">Midnight</h1>
+        <div class="user-status"><i class="fa-solid fa-circle-check"></i></div>
     </header>
 
     <main class="app-container">
-        <div class="meta-container">
-            <span class="meta" id="meta-info">Private Access</span>
-        </div>
-
         <article class="story-content" id="content">
-            <div class="loading-state">
-                <i class="fa-solid fa-circle-notch fa-spin"></i><br><br>
-                Membuka lembaran cerita...
-            </div>
+            <div class="loading-state">Pilih kategori di bawah untuk mulai membaca...</div>
         </article>
     </main>
 
-    <div class="floating-nav">
-        <button id="prev-btn" onclick="prevStory()" disabled>
-            <i class="fa-solid fa-chevron-left"></i>
-        </button>
-        <span id="page-info">0 / 0</span>
-        <button id="next-btn" onclick="nextStory()" disabled>
-            <i class="fa-solid fa-chevron-right"></i>
-        </button>
-    </div>
+    <nav class="tab-bar">
+        <div class="tab-item" onclick="showCategoryMenu('Suami')">
+            <i class="fa-solid fa-heart"></i>
+            <span>Suami</span>
+        </div>
+        <div class="tab-item" onclick="showCategoryMenu('Teman Suami')">
+            <i class="fa-solid fa-user-group"></i>
+            <span>Teman</span>
+        </div>
+        <div class="tab-item" onclick="showCategoryMenu('3s')">
+            <i class="fa-solid fa-fire"></i>
+            <span>3S</span>
+        </div>
+        <div class="tab-item" onclick="showCategoryMenu('Mertua')">
+            <i class="fa-solid fa-crown"></i>
+            <span>Mertua</span>
+        </div>
+    </nav>
 
-    <div id="nav-overlay" class="overlay" onclick="closeMenu(event)">
-        <div class="overlay-sheet">
-            <div class="sheet-header">
-                <div class="handle"></div>
-                <h2>Pilih Fantasi</h2>
-            </div>
-            
-            <div class="overlay-content">
-                <button onclick="filterCategory('Suami')">
-                    <i class="fa-solid fa-heart"></i> 1. Suami
-                </button>
-                <button onclick="filterCategory('Teman Suami')">
-                    <i class="fa-solid fa-user-group"></i> 2. Teman Suami
-                </button>
-                <button onclick="filterCategory('3s')">
-                    <i class="fa-solid fa-fire-flame-curved"></i> 3. 3S (Threesome)
-                </button>
-                <button onclick="filterCategory('Mertua')">
-                    <i class="fa-solid fa-crown"></i> 4. Ayah Mertua
-                </button>
-                
-                <hr class="menu-hr">
-                
-                <button onclick="fetchAllStories(); toggleMenu();" class="show-all">
-                    Tampilkan Semua Cerita
-                </button>
-            </div>
+    <div id="action-sheet" class="overlay" onclick="closeSheet(event)">
+        <div class="sheet-container">
+            <div class="handle"></div>
+            <h2 id="sheet-category-title">Kategori</h2>
+            <div id="story-list" class="story-list">
+                </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-                        </html>
-                        
+</html>
+
