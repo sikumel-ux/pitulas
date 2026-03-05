@@ -1,80 +1,46 @@
-// Dummy Data
 const products = [
-    { id: 1, name: "Ultra Smartphone", price: "Rp 4.500.000", image: "https://picsum.photos/200?random=1" },
-    { id: 2, name: "Wireless Earbuds", price: "Rp 850.000", image: "https://picsum.photos/200?random=2" },
-    { id: 3, name: "Smart Watch V2", price: "Rp 1.200.000", image: "https://picsum.photos/200?random=3" },
-    { id: 4, name: "Mechanical Keyboard", price: "Rp 950.000", image: "https://picsum.photos/200?random=4" },
-    { id: 5, name: "Powerbank 20k mAh", price: "Rp 400.000", image: "https://picsum.photos/200?random=5" },
-    { id: 6, name: "Gaming Mouse", price: "Rp 550.000", image: "https://picsum.photos/200?random=6" }
+    { name: "Macbook Air M2", price: "Rp 18.250.000", img: "https://picsum.photos/300/300?random=11" },
+    { name: "iPhone 15 Pro", price: "Rp 21.000.000", img: "https://picsum.photos/300/300?random=12" },
+    { name: "Sony WH-1000XM5", price: "Rp 4.299.000", img: "https://picsum.photos/300/300?random=13" },
+    { name: "iPad Pro 11", price: "Rp 15.450.000", img: "https://picsum.photos/300/300?random=14" }
 ];
 
-const catalogGrid = document.getElementById('catalog-grid');
+const productGrid = document.getElementById('product-grid');
 const searchInput = document.getElementById('search-input');
 const themeToggle = document.getElementById('theme-toggle');
 
-// 1. Render Products
-function renderCatalog(items) {
-    catalogGrid.innerHTML = '';
-    
-    if (items.length === 0) {
-        catalogGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px;">Produk tidak ditemukan.</p>';
-        return;
-    }
-
-    items.forEach((product, index) => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.style.animationDelay = `${index * 0.05}s`;
-        
-        card.innerHTML = `
-            <img src="${product.image}" alt="${product.name}" class="product-img">
-            <div class="product-info">
-                <h3>${product.name}</h3>
-                <span class="product-price">${product.price}</span>
-                <button class="btn-detail">Detail</button>
-            </div>
-        `;
-        catalogGrid.appendChild(card);
-    });
+// Render Catalog
+function displayProducts(items) {
+    productGrid.innerHTML = items.map(p => `
+        <div class="product-card">
+            <img src="${p.img}" alt="${p.name}">
+            <h4>${p.name}</h4>
+            <div class="price">${p.price}</div>
+            <button class="buy-btn">Beli Sekarang</button>
+        </div>
+    `).join('');
 }
 
-// 2. Search Filter
-searchInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = products.filter(p => 
-        p.name.toLowerCase().includes(term)
-    );
-    renderCatalog(filtered);
+// Search Filter
+searchInput.addEventListener('keyup', (e) => {
+    const val = e.target.value.toLowerCase();
+    const filtered = products.filter(p => p.name.toLowerCase().includes(val));
+    displayProducts(filtered);
 });
 
-// 3. Dark Mode Toggle
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light-mode';
-    document.body.className = savedTheme;
-    updateThemeIcon(savedTheme);
-}
-
-function updateThemeIcon(theme) {
-    const icon = themeToggle.querySelector('i');
-    if (theme === 'dark-mode') {
-        icon.className = 'fas fa-sun';
-    } else {
-        icon.className = 'fas fa-moon';
-    }
-}
-
+// Dark Mode Toggle
 themeToggle.addEventListener('click', () => {
-    if (document.body.classList.contains('light-mode')) {
-        document.body.className = 'dark-mode';
-        localStorage.setItem('theme', 'dark-mode');
-        updateThemeIcon('dark-mode');
-    } else {
-        document.body.className = 'light-mode';
-        localStorage.setItem('theme', 'light-mode');
-        updateThemeIcon('light-mode');
-    }
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    localStorage.setItem('mode', isDark ? 'dark' : 'light');
 });
 
-// Initialize
-initTheme();
-renderCatalog(products);
+// Load Preference
+if(localStorage.getItem('mode') === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+}
+
+// Initial Display
+displayProducts(products);
