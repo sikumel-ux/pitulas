@@ -3,55 +3,63 @@
 body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
 
 /* Gate Logic */
-.login-gate { display: none; }
-.main-app { display: none; }
-.unauth .login-gate { display: flex; }
-.auth-active .main-app { display: block; }
+.login-box { display: none; }
+.gallery-content { display: none; }
+.auth-active .login-box { display: none; }
+.auth-active .gallery-content { display: block; }
+.unauth .login-box { display: flex; }
 
-/* Header Premium */
-.header-premium {
+/* Header */
+.header-image {
     background-image: url('20260308_194220.jpg');
     background-size: cover; background-position: center;
     border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
-    position: relative; min-height: 220px; display: flex; align-items: flex-end; padding-bottom: 50px;
+    position: relative; min-height: 200px; display: flex; align-items: flex-end; padding-bottom: 60px;
 }
-.header-premium::before {
+.header-image::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(180deg, rgba(5, 58, 111, 0.1) 0%, rgba(5, 58, 111, 0.9) 100%);
     border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
 }
 
-/* Story Card */
-.story-card {
+/* Story Card Home (Preview) */
+.story-card-preview {
     background: white; border-radius: 30px; padding: 25px;
     box-shadow: 0 10px 30px rgba(5, 58, 111, 0.05);
-    border: 1px solid rgba(0,0,0,0.02); transition: 0.4s;
+    border: 1px solid rgba(0,0,0,0.02); margin-bottom: 20px;
+    transition: 0.3s;
 }
-.story-card h4 { font-size: 1.2rem; font-weight: 800; color: #053a6f; margin-bottom: 15px; }
+.story-card-preview h4 { font-size: 1.15rem; font-weight: 800; color: #053a6f; margin-bottom: 10px; line-height: 1.3; }
+.preview-text {
+    font-size: 14px; line-height: 1.7; color: #64748b;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden; text-align: justify;
+}
 
-.content-text {
-    font-size: 15px; line-height: 1.8; color: #475569;
-    text-align: justify; text-justify: inter-word;
+/* Full Story View */
+.story-card-full {
+    background: white; border-radius: 35px; padding: 30px 25px;
+    box-shadow: 0 20px 40px rgba(5, 58, 111, 0.05);
 }
+.content-text { font-size: 15px; line-height: 1.8; color: #334155; text-align: justify; text-justify: inter-word; }
 
-/* Daftar Judul Lainnya */
-.other-stories { background: #f1f5f9; border-radius: 25px; padding: 20px; margin-top: 30px; }
-.story-link {
-    padding: 15px; background: white; border-radius: 18px;
-    margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
-    font-size: 11px; font-weight: 800; color: #053a6f; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+/* Archive List */
+.list-item {
+    background: white; padding: 18px 20px; border-radius: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer;
 }
-.story-link:active { border-color: #facc15; transform: scale(0.98); }
+.list-item span { font-size: 11px; font-weight: 800; color: #053a6f; text-transform: uppercase; }
 
 /* Nav Bawah */
-.nav-bottom {
+.nav-custom { 
     position: fixed; bottom: 25px; left: 20px; right: 20px;
-    background: #053a6f; border-radius: 25px; padding: 12px 20px;
-    display: flex; justify-content: space-around; align-items: center;
-    box-shadow: 0 15px 35px rgba(5, 58, 111, 0.3); z-index: 1000;
+    background: #053a6f; border-radius: 35px; padding: 18px 20px; 
+    box-shadow: 0 15px 40px rgba(5, 58, 111, 0.3); z-index: 1000;
 }
-.nav-btn { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: rgba(255,255,255,0.3); }
-.nav-btn.active { color: #facc15; }
-.nav-btn i { font-size: 18px; }
-.nav-btn span { font-size: 7px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
+.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
+.cat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.4; transition: 0.3s; text-decoration: none; color: white; }
+.cat-item.active { opacity: 1; }
+.cat-icon { width: 42px; height: 42px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #053a6f; }
+.cat-item.active .cat-icon { background: #facc15; color: #053a6f; }
+.cat-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
