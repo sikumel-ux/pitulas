@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasi Kita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f5f5f5; -webkit-tap-highlight-color: transparent; }
+        
+        .header-image {
+            background-image: url('20260308_194220.jpg');
+            background-size: cover; background-position: center;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            position: relative; min-height: 220px;
+        }
+        .header-image::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(5, 58, 111, 0.2) 0%, rgba(5, 58, 111, 0.8) 100%);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        }
+
+        /* Grid 2 Baris untuk Kategori */
+        .cat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .cat-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 4px; cursor: pointer; transition: 0.3s;
+        }
+        
+        /* Icon Lebih Kecil */
+        .cat-icon {
+            width: 44px; height: 44px;
+            background: white; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #053a6f;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .cat-item.active .cat-icon { background: #053a6f; color: #facc15; }
+        .cat-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; color: #64748b; }
+        .cat-item.active span { color: #053a6f; }
+
+        .story-card {
+            background: white; border-radius: 30px; padding: 20px;
+            box-shadow: 0 10px 25px rgba(5, 58, 111, 0.04);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Navigasi Bawah Custom */
+        .nav-custom {
+            background: #053a6f; border-radius: 30px;
+            padding: 12px 24px; box-shadow: 0 15px 40px rgba(5, 58, 111, 0.3);
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); transition: 0.3s; }
+        .nav-btn.active { color: #facc15; }
+        .nav-btn i { font-size: 18px; }
+        .nav-btn span { font-size: 7px; font-weight: 900; margin-top: 3px; text-transform: uppercase; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <header class="header-image pt-10 pb-16 px-6 text-white relative">
+        <div class="relative z-10">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-black" id="clock">19:53</h1>
+                    <p class="text-[9px] font-bold opacity-70 tracking-widest">08 - 03 - 2026</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20">
+                    <i class="fa-solid fa-crown text-[#facc15]"></i>
+                </div>
+            </div>
+            <p class="text-[8px] uppercase tracking-[0.3em] font-black opacity-60">Fantasi Kita</p>
+            <h2 class="text-xl font-extrabold leading-tight">Dunia Rahasia</h2>
+        </div>
+    </header>
+
+    <div class="px-6 -mt-10 relative z-20">
+        <div class="bg-white/90 backdrop-blur-lg rounded-[30px] p-5 shadow-xl border border-white/50">
+            <div class="cat-grid">
+                <div class="cat-item active" onclick="filterCategory('Semua', this)">
+                    <div class="cat-icon"><i class="fa-solid fa-border-all"></i></div>
+                    <span>Semua</span>
+                </div>
+                <div class="cat-item" onclick="filterCategory('Suami', this)">
+                    <div class="cat-icon"><i class="fa-solid fa-house-user"></i></div>
+                    <span>Suami</span>
+                </div>
+                <div class="cat-item" onclick="filterCategory('Mertua', this)">
+                    <div class="cat-icon"><i class="fa-solid fa-users-rectangle"></i></div>
+                    <span>Mertua</span>
+                </div>
+                <div class="cat-item" onclick="filterCategory('Teman', this)">
+                    <div class="cat-icon"><i class="fa-solid fa-user-group"></i></div>
+                    <span>Teman</span>
+                </div>
+                <div class="cat-item" onclick="filterCategory('3S', this)">
+                    <div class="cat-icon"><i class="fa-solid fa-people-roof"></i></div>
+                    <span>3S</span>
+                </div>
+                <div class="cat-item" onclick="filterCategory('Party', this)">
+                    <div class="cat-icon"><i class="fa-solid fa-champagne-glasses"></i></div>
+                    <span>Party</span>
+                </div>
+                <div class="cat-item" onclick="filterCategory('Video', this)">
+                    <div class="cat-icon"><i class="fa-brands fa-twitter"></i></div>
+                    <span>Video</span>
+                </div>
+                <a href="admin.html" class="cat-item">
+                    <div class="cat-icon bg-yellow-50"><i class="fa-solid fa-plus"></i></div>
+                    <span>Post</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <main class="px-6 mt-8">
+        <div id="loading" class="flex flex-col items-center py-10">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#053a6f] mb-2"></div>
+            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Memuat...</p>
+        </div>
+        <div id="content-list" class="space-y-6"></div>
+    </main>
+
+    <div class="fixed bottom-6 left-6 right-6 z-50">
+        <nav class="nav-custom flex justify-between items-center">
+            <div class="nav-btn active" onclick="filterCategory('Semua', this)">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-btn" onclick="filterCategory('Mertua', this)">
+                <i class="fa-solid fa-users-rectangle"></i>
+                <span>Mertua</span>
+            </div>
+            <div class="nav-btn" onclick="filterCategory('3S', this)">
+                <i class="fa-solid fa-people-roof"></i>
+                <span>3S</span>
+            </div>
+            <div class="nav-btn" onclick="filterCategory('Party', this)">
+                <i class="fa-solid fa-glass-cheers"></i>
+                <span>Party</span>
+            </div>
+            <div class="nav-btn" onclick="filterCategory('Video', this)">
+                <i class="fa-brands fa-twitter"></i>
+                <span>Video</span>
+            </div>
+        </nav>
+    </div>
+
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+        initializeApp(firebaseConfig);
+
+        const API_URL = "https://script.google.com/macros/s/AKfycbx9JsUb0saYvFnH8vpCn2JZu_AzdrXXXmQIcGfMW0dsTvPndFQC_CtKyLhMx_6Kjd_IEg/exec";
+        let allData = [];
+
+        async function fetchAll() {
+            try {
+                const res = await fetch(API_URL);
+                allData = await res.json();
+                renderItems(allData);
+                document.getElementById('loading').classList.add('hidden');
+            } catch (e) { console.error(e); }
+        }
+
+        function renderItems(data) {
+            const container = document.getElementById('content-list');
+            container.innerHTML = '';
+            data.forEach(item => {
+                let card = `<div class="story-card">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="bg-[#053a6f]/5 text-[#053a6f] px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-wider">${item.kategori}</span>
+                        <span class="text-[8px] text-gray-400 font-bold tabular-nums">${item.tanggal}</span>
+                    </div>
+                    <h4 class="text-base font-bold text-gray-800 leading-tight mb-2">${item.judul}</h4>
+                    <p class="text-gray-400 text-[10px] leading-relaxed line-clamp-2">${item.isi}</p>
+                </div>`;
+                if(item.kategori === 'Video') {
+                    card = `<div class="story-card"><blockquote class="twitter-tweet" data-theme="light"><a href="${item.isi}"></a></blockquote></div>`;
+                }
+                container.innerHTML += card;
+            });
+            if(window.twttr) window.twttr.widgets.load();
+        }
+
+        window.filterCategory = (cat, el) => {
+            document.querySelectorAll('.cat-item, .nav-btn').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            const filtered = cat === 'Semua' ? allData : allData.filter(d => d.kategori === cat);
+            renderItems(filtered);
+        };
+
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('clock').innerText = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+        }, 1000);
+
+        fetchAll();
+    </script>
+</body>
+</html>
