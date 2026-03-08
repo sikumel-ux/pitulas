@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
+
+/* Gate Logic */
+.login-gate { display: none; }
+.main-app { display: none; }
+.unauth .login-gate { display: flex; }
+.auth-active .main-app { display: block; }
+
+/* Header Premium */
+.header-premium {
+    background-image: url('20260308_194220.jpg');
+    background-size: cover; background-position: center;
+    border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+    position: relative; min-height: 220px; display: flex; align-items: flex-end; padding-bottom: 50px;
+}
+.header-premium::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(5, 58, 111, 0.1) 0%, rgba(5, 58, 111, 0.9) 100%);
+    border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+}
+
+/* Story Card */
+.story-card {
+    background: white; border-radius: 30px; padding: 25px;
+    box-shadow: 0 10px 30px rgba(5, 58, 111, 0.05);
+    border: 1px solid rgba(0,0,0,0.02); transition: 0.4s;
+}
+.story-card h4 { font-size: 1.2rem; font-weight: 800; color: #053a6f; margin-bottom: 15px; }
+
+.content-text {
+    font-size: 15px; line-height: 1.8; color: #475569;
+    text-align: justify; text-justify: inter-word;
+}
+
+/* Daftar Judul Lainnya */
+.other-stories { background: #f1f5f9; border-radius: 25px; padding: 20px; margin-top: 30px; }
+.story-link {
+    padding: 15px; background: white; border-radius: 18px;
+    margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; font-weight: 800; color: #053a6f; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+}
+.story-link:active { border-color: #facc15; transform: scale(0.98); }
+
+/* Nav Bawah */
+.nav-bottom {
+    position: fixed; bottom: 25px; left: 20px; right: 20px;
+    background: #053a6f; border-radius: 25px; padding: 12px 20px;
+    display: flex; justify-content: space-around; align-items: center;
+    box-shadow: 0 15px 35px rgba(5, 58, 111, 0.3); z-index: 1000;
+}
+.nav-btn { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: rgba(255,255,255,0.3); }
+.nav-btn.active { color: #facc15; }
+.nav-btn i { font-size: 18px; }
+.nav-btn span { font-size: 7px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
