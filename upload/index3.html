@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cloud - Private Storage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding-bottom: 100px; }
+        
+        /* State Login */
+        .login-box { display: none; }
+        .gallery-content { display: none; }
+        .auth-active .login-box { display: none; }
+        .auth-active .gallery-content { display: block; }
+        .unauth .login-box { display: flex; }
+
+        .header-image {
+            background-image: url('20260308_194220.jpg');
+            background-size: cover; background-position: center;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            position: relative; min-height: 180px; display: flex; align-items: center; justify-content: center;
+        }
+        .header-image::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(5, 58, 111, 0.4) 0%, rgba(5, 58, 111, 0.9) 100%);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        }
+
+        /* Navigasi Custom Sesuai Web Utama */
+        .nav-custom {
+            position: fixed; bottom: 25px; left: 20px; right: 20px;
+            background: #053a6f; border-radius: 25px; padding: 12px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 15px 35px rgba(5, 58, 111, 0.4); z-index: 1000;
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); text-decoration: none; transition: 0.3s; }
+        .nav-btn.active { color: #facc15; }
+        .nav-btn i { font-size: 18px; }
+        .nav-btn span { font-size: 7px; font-weight: 900; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Upload Zone */
+        .upload-card { background: white; border-radius: 35px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        .upload-zone {
+            border: 2px dashed #e2e8f0; border-radius: 25px; padding: 40px 20px;
+            transition: 0.3s; display: flex; flex-direction: column; align-items: center;
+        }
+        .upload-zone.dragging { border-color: #facc15; background: #fffbeb; }
+
+        /* Custom Notification Toast */
+        #customToast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: #053a6f; color: #facc15; padding: 20px 30px;
+            border-radius: 20px; font-weight: 800; font-size: 12px; text-transform: uppercase;
+            text-align: center; width: 85%; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+        }
+        #customToast.show { top: 30px; }
+    </style>
+</head>
+<body class="unauth" id="mainBody">
+
+    <div id="customToast">
+        <i class="fa-solid fa-circle-check mb-2 text-xl block"></i>
+        <span id="toastMsg">Foto/video kamu sudah tersimpan, siap dinikmatin atau dipamerkan.</span>
+    </div>
+
+    <div class="login-box fixed inset-0 z-[100] bg-[#053a6f] flex flex-col items-center justify-center px-10">
+        <div class="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-sm text-center">
+            <div class="bg-[#facc15] w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <i class="fa-solid fa-cloud-shield text-[#053a6f] text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-black text-[#053a6f] mb-2 uppercase tracking-tighter">Private Cloud</h2>
+            <p class="text-gray-400 text-[10px] font-bold mb-8 uppercase tracking-widest">Akses Koleksi Sekawan</p>
+            <input type="email" id="loginEmail" placeholder="Email" class="w-full p-4 rounded-2xl bg-gray-50 mb-4 outline-none border border-gray-100 font-bold">
+            <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl bg-gray-50 mb-6 outline-none border border-gray-100 font-bold">
+            <button id="btnLogin" class="w-full bg-[#053a6f] text-[#facc15] py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">Buka Brankas</button>
+        </div>
+    </div>
+
+    <div class="gallery-content">
+        <header class="header-image px-8">
+            <div class="relative z-10 text-center">
+                <h1 class="text-3xl font-black text-white uppercase italic tracking-tighter">Sekawan Cloud</h1>
+                <p class="text-[9px] font-bold text-[#facc15] tracking-[0.4em] uppercase mt-1">Encrypted Storage</p>
+            </div>
+            <button id="btnLogout" class="absolute top-10 right-8 text-white/50 text-xl"><i class="fa-solid fa-power-off"></i></button>
+        </header>
+
+        <main class="px-6 -mt-10 relative z-20">
+            <div class="upload-card">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-[#053a6f] font-black uppercase text-[11px] tracking-widest">Upload ke Cloud</h3>
+                    <span class="bg-green-100 text-green-600 text-[8px] font-black px-3 py-1 rounded-full uppercase">Secure</span>
+                </div>
+
+                <div class="upload-zone" id="dropZone">
+                    <input type="file" id="fileInput" class="hidden" accept="image/*,video/*">
+                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-[#053a6f] shadow-inner">
+                        <i class="fa-solid fa-arrow-up-from-bracket text-2xl"></i>
+                    </div>
+                    <p class="font-black text-[#053a6f] text-sm">Pilih File Baru</p>
+                    <p class="text-[9px] text-gray-400 mt-2 font-bold uppercase tracking-widest">Sentuh untuk memilih koleksi</p>
+                </div>
+
+                <div id="uploadStatus" class="mt-8 hidden">
+                    <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mb-3">
+                        <div id="progressBar" class="bg-[#053a6f] h-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p id="statusText" class="text-[10px] font-black text-[#053a6f] uppercase text-center animate-pulse">Sinkronisasi Cloud...</p>
+                </div>
+            </div>
+
+            <div class="mt-8 px-4 text-center">
+                <p class="text-gray-400 text-[10px] font-bold leading-relaxed uppercase tracking-widest">
+                    Semua file dienkripsi dan hanya bisa diakses oleh pemilik cloud.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <nav class="nav-custom">
+        <a href="index.html" class="nav-btn"><i class="fa-solid fa-house-chimney"></i><span>Beranda</span></a>
+        <a href="gallery.html" class="nav-btn active"><i class="fa-solid fa-cloud"></i><span>Cloud</span></a>
+        <a href="admin.html" class="nav-btn"><i class="fa-solid fa-user-gear"></i><span>Admin</span></a>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // URL GAS LO
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxmYhZ-5C74fQaLMkAgEMjaXTiJiFzMKyzfR0MN6RTkajXWjXyXywvTft8k9S-w32CZ/exec";
+
+        // Login Logic
+        document.getElementById('btnLogin').onclick = () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(() => showToast("Akses Ditolak, Bro!", true));
+        };
+
+        document.getElementById('btnLogout').onclick = () => signOut(auth);
+
+        onAuthStateChanged(auth, (user) => {
+            document.getElementById('mainBody').className = user ? 'auth-active' : 'unauth';
+        });
+
+        // Notifikasi Toast Custom
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('customToast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = msg;
+            toast.style.background = isError ? '#ef4444' : '#053a6f';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // Upload Logic
+        const fileInput = document.getElementById('fileInput');
+        document.getElementById('dropZone').onclick = () => fileInput.click();
+
+        fileInput.onchange = () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            const statusBox = document.getElementById('uploadStatus');
+            const pBar = document.getElementById('progressBar');
+            
+            statusBox.classList.remove('hidden');
+            pBar.style.width = "30%";
+            
+            reader.onload = (e) => {
+                pBar.style.width = "60%";
+                const base64 = e.target.result.split(',')[1];
+                
+                fetch(scriptURL, {
+                    method: "POST",
+                    body: JSON.stringify({ 
+                        base64: base64, 
+                        type: file.type, 
+                        name: "CLOUD_" + Date.now() + "_" + file.name 
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    pBar.style.width = "100%";
+                    setTimeout(() => {
+                        statusBox.classList.add('hidden');
+                        pBar.style.width = "0%";
+                        showToast("Foto/video kamu sudah tersimpan, siap dinikmatin atau dipamerkan.");
+                    }, 1000);
+                })
+                .catch(() => {
+                    alert("Koneksi ke Cloud Terputus!");
+                    statusBox.classList.add('hidden');
+                });
+            };
+            reader.readAsDataURL(file);
+        };
+    </script>
+</body>
+                                                                                                            </html>
+                                                                                                            
