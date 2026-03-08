@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
+
+/* Header Premium */
+.header-image {
+    background-image: url('20260308_194220.jpg');
+    background-size: cover; background-position: center;
+    border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+    position: relative; min-height: 200px; display: flex; align-items: flex-end; padding-bottom: 60px;
+}
+.header-image::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(5, 58, 111, 0.1) 0%, rgba(5, 58, 111, 0.9) 100%);
+    border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+}
+
+/* Kategori 2 Baris */
+.cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.cat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.5; transition: 0.3s; }
+.cat-item.active { opacity: 1; transform: scale(1.05); }
+.cat-icon { width: 42px; height: 42px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #053a6f; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.cat-item.active .cat-icon { background: #053a6f; color: #facc15; }
+.cat-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
+
+/* Story Card - READABLE FOCUS */
+.story-card {
+    background: white; border-radius: 28px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(5, 58, 111, 0.05);
+    border: 1px solid rgba(0,0,0,0.02); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.story-card h4 { font-size: 1.25rem; font-weight: 800; color: #053a6f; margin-bottom: 12px; }
+
+/* Font Cerita: Justify & Nyaman */
+.content-text {
+    font-size: 15px;
+    line-height: 1.8; /* Sedikit lebih lega buat justify */
+    color: #475569;
+    text-align: justify; /* Rata kanan-kiri */
+    text-justify: inter-word; /* Mengatur spasi antar kata agar tidak berantakan di mobile */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    transition: all 0.3s ease;
+}
+
+/* Memberikan jarak antar paragraf (saat pakai <br>) */
+.content-text br {
+    display: block;
+    content: "";
+    margin-top: 10px;
+}
+
+/* Saat kartu diklik (Expanded) */
+.story-card.expanded { transform: scale(1.02); border-color: #facc15; }
+.story-card.expanded .content-text {
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+}
+
+/* Nav Bawah */
+.nav-custom { background: #053a6f; border-radius: 25px; padding: 12px 20px; box-shadow: 0 15px 40px rgba(5, 58, 111, 0.3); display: flex; justify-content: space-between; align-items: center; }
+.nav-btn { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); font-size: 18px; text-decoration: none; }
+.nav-btn.active { color: #facc15; }
+.nav-btn span { font-size: 7px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
