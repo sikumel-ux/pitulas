@@ -15,15 +15,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// AUTH
-const btnLogin = document.getElementById('btnLogin');
-if (btnLogin) {
-    btnLogin.addEventListener('click', () => {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
-        signInWithEmailAndPassword(auth, email, pass).catch(() => alert("Akses Gagal!"));
-    });
-}
+// AUTH HANDLER
+document.getElementById('btnLogin').addEventListener('click', () => {
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPass').value;
+    signInWithEmailAndPassword(auth, email, pass).catch(() => alert("Akses Gagal!"));
+});
 document.getElementById('btnLogout').onclick = () => signOut(auth);
 
 onAuthStateChanged(auth, (user) => {
@@ -31,75 +28,67 @@ onAuthStateChanged(auth, (user) => {
     if(user) loadData();
 });
 
-// DATA
+// DATA HANDLER
 async function loadData(targetId = null) {
-    const contentArea = document.getElementById('contentArea');
-    const archiveSection = document.getElementById('archiveSection');
+    const area = document.getElementById('contentArea');
+    const archive = document.getElementById('archiveSection');
     
     try {
         const q = query(collection(db, "cerita"), orderBy("tanggal", "desc"), limit(15));
-        const snapshot = await getDocs(q);
+        const snap = await getDocs(q);
         const stories = [];
-        snapshot.forEach(doc => stories.push({ id: doc.id, ...doc.data() }));
+        snap.forEach(d => stories.push({ id: d.id, ...d.data() }));
 
-        if (stories.length === 0) {
-            contentArea.innerHTML = "<p class='text-center text-slate-400'>Kosong, Bro!</p>";
-            return;
-        }
-
-        archiveSection.classList.remove('hidden');
+        if (stories.length === 0) return;
+        archive.classList.remove('hidden');
 
         if (targetId) {
-            renderFullStory(stories.find(s => s.id === targetId));
-            renderArchive(stories.filter(s => s.id !== targetId));
+            renderFull(stories.find(s => s.id === targetId));
+            renderList(stories.filter(s => s.id !== targetId));
         } else {
             renderPreviews(stories.slice(0, 5));
-            renderArchive(stories.slice(5, 15));
+            renderList(stories.slice(5, 15));
         }
-    } catch (err) {
-        contentArea.innerHTML = "<p class='text-center text-red-400'>Error Server!</p>";
-    }
+    } catch (e) { console.error(e); }
 }
 
 function renderPreviews(data) {
-    const area = document.getElementById('contentArea');
-    area.innerHTML = data.map(item => `
-        <div class="story-card-preview active:scale-95 transition-all" onclick="loadData('${item.id}')">
-            <span class="text-[7px] font-black text-[#facc15] bg-[#053a6f] px-2 py-0.5 rounded-md inline-block mb-3 uppercase tracking-widest">
-                ${item.kategori || 'PRIVATE'}
-            </span>
-            <h4 class="italic tracking-tighter">${item.judul}</h4>
-            <div class="preview-text">${item.isi}</div>
-            <div class="mt-4 text-[9px] font-black text-[#053a6f] uppercase tracking-widest">
-                Lanjut Baca <i class="fa-solid fa-arrow-right-long ml-1"></i>
+    document.getElementById('contentArea').innerHTML = data.map(item => `
+        <div class="story-card-preview" onclick="loadData('${item.id}')">
+            <div class="flex justify-between items-center mb-6">
+                <span class="bg-slate-100 text-slate-500 text-[9px] font-black px-4 py-1.5 rounded-full uppercase">${item.kategori || '3S'}</span>
+                <span class="text-slate-300 text-[9px] font-bold">08 - 03 - 2026</span>
             </div>
+            <h4>${item.judul}</h4>
+            <div class="preview-text">${item.isi}</div>
+            <div class="w-full h-px bg-slate-50 mt-8 mb-4"></div>
+            <div class="flex justify-center text-slate-200"><i class="fa-solid fa-chevron-down"></i></div>
         </div>
     `).join('');
 }
 
-function renderFullStory(fokus) {
-    const area = document.getElementById('contentArea');
-    area.innerHTML = `
-        <div class="bg-white rounded-[35px] p-8 shadow-xl border-b-8 border-[#facc15]">
-            <button onclick="loadData()" class="mb-6 text-[9px] font-black text-slate-300 uppercase tracking-widest">
-                <i class="fa-solid fa-house mr-1"></i> Beranda
+function renderFull(f) {
+    document.getElementById('contentArea').innerHTML = `
+        <div class="bg-white rounded-[40px] p-8 shadow-xl border-b-8 border-[#facc15]">
+            <button onclick="loadData()" class="mb-8 text-[9px] font-black text-slate-300 uppercase tracking-widest">
+                <i class="fa-solid fa-chevron-left mr-2"></i> Kembali
             </button>
-            <h4 class="text-2xl font-black text-[#053a6f] leading-tight mb-6 italic tracking-tighter">${fokus.judul}</h4>
-            <div class="content-text">${fokus.isi.replace(/\n/g, '<br>')}</div>
+            <h4 class="text-2xl font-black text-[#053a6f] leading-tight mb-8">${f.judul}</h4>
+            <div class="content-text">${f.isi.replace(/\n/g, '<br>')}</div>
         </div>
     `;
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function renderArchive(lainnya) {
+function renderList(l) {
     const container = document.getElementById('listLainnya');
     container.innerHTML = "";
-    lainnya.forEach(item => {
-        const div = document.createElement('div');
-        div.className = "list-item active:scale-95 transition-all";
-        div.innerHTML = `<span>${item.judul}</span><i class="fa-solid fa-chevron-right text-[10px] opacity-20"></i>`;
-        div.onclick = () => { window.scrollTo(0,0); loadData(item.id); };
-        container.appendChild(div);
+    l.forEach(item => {
+        const d = document.createElement('div');
+        d.className = "list-item active:scale-95 transition-all";
+        d.innerHTML = `<span>${item.judul}</span><i class="fa-solid fa-chevron-right text-[10px] opacity-10"></i>`;
+        d.onclick = () => { window.scrollTo(0,0); loadData(item.id); };
+        container.appendChild(d);
     });
 }
 
