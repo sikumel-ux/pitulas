@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <title>Fantasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="fantasi.css">
+</head>
+<body class="pb-36">
+    <header class="header-image px-8">
+        <div class="relative z-10 w-full">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 class="text-3xl font-black text-white" id="clock">00:00</h1>
+                    <p class="text-[10px] font-bold text-white/70 tracking-[0.3em]">08 - 03 - 2026</p>
+                </div>
+                <div class="bg-[#facc15] p-3 rounded-2xl shadow-lg"><i class="fa-solid fa-gem text-[#053a6f]"></i></div>
+            </div>
+            <h2 class="text-xl font-extrabold text-white">Brankas Rahasia Tiwi</h2>
+        </div>
+    </header>
+
+    <div class="px-6 -mt-8 relative z-20">
+        <div class="bg-white/95 backdrop-blur-md rounded-[30px] p-5 shadow-xl">
+            <div class="cat-grid">
+                <div class="cat-item active" onclick="filterCategory('Semua', this)"><div class="cat-icon"><i class="fa-solid fa-house"></i></div><span>Semua</span></div>
+                <div class="cat-item" onclick="filterCategory('Suami', this)"><div class="cat-icon"><i class="fa-solid fa-heart"></i></div><span>Suami</span></div>
+                <div class="cat-item" onclick="filterCategory('Mertua', this)"><div class="cat-icon"><i class="fa-solid fa-users"></i></div><span>Mertua</span></div>
+                <div class="cat-item" onclick="filterCategory('3S', this)"><div class="cat-icon"><i class="fa-solid fa-couch"></i></div><span>3S</span></div>
+                <div class="cat-item" onclick="filterCategory('Teman', this)"><div class="cat-icon"><i class="fa-solid fa-user-secret"></i></div><span>Teman</span></div>
+                <div class="cat-item" onclick="filterCategory('Party', this)"><div class="cat-icon"><i class="fa-solid fa-glass-cheers"></i></div><span>Party</span></div>
+                <div class="cat-item" onclick="filterCategory('Video', this)"><div class="cat-icon"><i class="fa-brands fa-twitter"></i></div><span>Video</span></div>
+                <a href="admin.html" class="cat-item"><div class="cat-icon bg-yellow-50 text-yellow-600"><i class="fa-solid fa-pen-nib"></i></div><span>Tulis</span></a>
+            </div>
+        </div>
+    </div>
+
+    <main class="px-6 mt-8 space-y-6" id="content-list">
+        <div id="loading" class="flex justify-center py-20"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#053a6f]"></div></div>
+    </main>
+
+    <div class="fixed bottom-6 left-6 right-6 z-50">
+        <nav class="nav-custom">
+            <div class="nav-btn active" onclick="filterCategory('Semua', this)"><i class="fa-solid fa-home"></i><span>Home</span></div>
+            <div class="nav-btn" onclick="filterCategory('Mertua', this)"><i class="fa-solid fa-users-rectangle"></i><span>Mertua</span></div>
+            <div class="nav-btn" onclick="filterCategory('3S', this)"><i class="fa-solid fa-people-roof"></i><span>3S</span></div>
+            <div class="nav-btn" onclick="filterCategory('Party', this)"><i class="fa-solid fa-champagne-glasses"></i><span>Party</span></div>
+            <div class="nav-btn" onclick="filterCategory('Video', this)"><i class="fa-brands fa-twitter"></i><span>Video</span></div>
+        </nav>
+    </div>
+
+    <script async src="https://platform.twitter.com/widgets.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+                                                                                                                                                                 </html>
+                                                                                                      
