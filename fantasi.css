@@ -32,16 +32,25 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; 
 
 .story-card h4 { font-size: 1.25rem; font-weight: 800; color: #053a6f; margin-bottom: 12px; }
 
-/* Font Cerita: Dibikin Gede & Nyaman */
+/* Font Cerita: Justify & Nyaman */
 .content-text {
-    font-size: 15px; /* Lebih gede */
-    line-height: 1.7; /* Jarak baris lega */
+    font-size: 15px;
+    line-height: 1.8; /* Sedikit lebih lega buat justify */
     color: #475569;
+    text-align: justify; /* Rata kanan-kiri */
+    text-justify: inter-word; /* Mengatur spasi antar kata agar tidak berantakan di mobile */
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Awalnya cuma 3 baris */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     transition: all 0.3s ease;
+}
+
+/* Memberikan jarak antar paragraf (saat pakai <br>) */
+.content-text br {
+    display: block;
+    content: "";
+    margin-top: 10px;
 }
 
 /* Saat kartu diklik (Expanded) */
@@ -53,6 +62,6 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; 
 
 /* Nav Bawah */
 .nav-custom { background: #053a6f; border-radius: 25px; padding: 12px 20px; box-shadow: 0 15px 40px rgba(5, 58, 111, 0.3); display: flex; justify-content: space-between; align-items: center; }
-.nav-btn { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); font-size: 18px; }
+.nav-btn { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); font-size: 18px; text-decoration: none; }
 .nav-btn.active { color: #facc15; }
 .nav-btn span { font-size: 7px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
