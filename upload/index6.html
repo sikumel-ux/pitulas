@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cloud Storage V.02 - Sekawan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; padding-bottom: 120px; }
+        
+        /* State Auth */
+        .login-box { display: none; }
+        .gallery-content { display: none; }
+        .auth-active .login-box { display: none; }
+        .auth-active .gallery-content { display: block; }
+        .unauth .login-box { display: flex; }
+
+        /* Header V.02 */
+        .header-v2 {
+            background: linear-gradient(135deg, #053a6f 0%, #0a4d8f 100%);
+            border-bottom-left-radius: 45px; border-bottom-right-radius: 45px;
+            padding: 60px 30px 80px; text-align: center; position: relative;
+        }
+        .header-v2 h1 { color: #fff; font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; }
+        .header-v2 p { color: #facc15; font-size: 10px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; opacity: 0.8; }
+
+        /* Navigasi Bawah Gaya Halaman Utama */
+        .bottom-nav {
+            position: fixed; bottom: 25px; left: 20px; right: 20px;
+            background: #053a6f; border-radius: 30px; padding: 15px 10px;
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 15px 35px rgba(5, 58, 111, 0.35); z-index: 1000;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; transition: 0.3s; }
+        .nav-icon {
+            width: 42px; height: 42px; border-radius: 14px; background: rgba(255,255,255,0.1);
+            display: flex; items-center; justify-content: center; color: rgba(255,255,255,0.5);
+            font-size: 16px; margin-bottom: 6px; transition: 0.3s;
+        }
+        .nav-item span { font-size: 8px; font-weight: 800; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* State Active */
+        .nav-item.active .nav-icon { background: #facc15; color: #053a6f; box-shadow: 0 5px 15px rgba(250, 204, 21, 0.3); }
+        .nav-item.active span { color: #facc15; }
+
+        /* Upload Card */
+        .upload-card { background: white; border-radius: 40px; padding: 35px 25px; margin: 0 20px; margin-top: -40px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
+        .drop-zone {
+            border: 2px dashed #f1f5f9; background: #fafafa; border-radius: 30px;
+            padding: 40px 20px; display: flex; flex-direction: column; align-items: center; transition: 0.3s;
+        }
+        .drop-zone:active { transform: scale(0.97); background: #fefce8; border-color: #facc15; }
+
+        /* Toast */
+        #customToast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: #053a6f; color: #facc15; padding: 18px 25px; border-radius: 20px;
+            font-weight: 800; font-size: 11px; text-transform: uppercase; width: 85%;
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transition: 0.5s; z-index: 2000;
+        }
+        #customToast.show { top: 30px; }
+    </style>
+</head>
+<body class="unauth" id="mainBody">
+
+    <div id="customToast">Foto/video kamu sudah tersimpan, siap dinikmatin atau dipamerkan.</div>
+
+    <div class="login-box fixed inset-0 z-[100] bg-[#053a6f] flex flex-col items-center justify-center px-10">
+        <div class="bg-white p-8 rounded-[45px] shadow-2xl w-full max-w-sm text-center border-b-8 border-yellow-400">
+            <h2 class="text-2xl font-black text-[#053a6f] mb-2 uppercase italic">Brankas V.02</h2>
+            <p class="text-gray-400 text-[9px] font-bold mb-8 uppercase tracking-[0.3em]">Restricted Access</p>
+            <div class="space-y-4">
+                <input type="email" id="loginEmail" placeholder="Email" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f]">
+                <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f]">
+                <button id="btnLogin" class="w-full bg-[#053a6f] text-yellow-400 py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl">Buka</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-content">
+        <header class="header-v2">
+            <button id="btnLogout" class="absolute top-8 right-8 text-white/30 text-lg"><i class="fa-solid fa-power-off"></i></button>
+            <h1>Cloud Storage V.02</h1>
+            <p>Sekawan Private</p>
+        </header>
+
+        <main>
+            <div class="upload-card">
+                <div class="flex items-center justify-between mb-6 px-2">
+                    <span class="text-[10px] font-black text-[#053a6f] uppercase tracking-widest">Upload Koleksi</span>
+                    <i class="fa-solid fa-shield-halved text-green-500 text-xs"></i>
+                </div>
+
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" id="fileInput" class="hidden" accept="image/*,video/*">
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 text-[#053a6f]">
+                        <i class="fa-solid fa-plus text-xl"></i>
+                    </div>
+                    <p class="text-sm font-black text-[#053a6f]">Pilih File Baru</p>
+                    <p class="text-[9px] text-gray-400 mt-1 font-bold">Foto atau Video</p>
+                </div>
+
+                <div id="uploadStatus" class="mt-6 hidden">
+                    <div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden mb-2">
+                        <div id="progressBar" class="bg-[#053a6f] h-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p class="text-[9px] font-black text-[#053a6f] uppercase text-center animate-pulse">Sinkronisasi Cloud...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon"><i class="fa-solid fa-heart"></i></div>
+            <span>Suami</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon"><i class="fa-solid fa-users"></i></div>
+            <span>Mertua</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon"><i class="fa-solid fa-user-secret"></i></div>
+            <span>Teman</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <div class="nav-icon"><i class="fa-solid fa-couch"></i></div>
+            <span>3S</span>
+        </a>
+        <a href="gallery.html" class="nav-item active">
+            <div class="nav-icon"><i class="fa-solid fa-cloud"></i></div>
+            <span>Cloud</span>
+        </a>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxmYhZ-5C74fQaLMkAgEMjaXTiJiFzMKyzfR0MN6RTkajXWjXyXywvTft8k9S-w32CZ/exec";
+
+        document.getElementById('btnLogin').onclick = () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(() => alert("Akses Ditolak!"));
+        };
+
+        document.getElementById('btnLogout').onclick = () => signOut(auth);
+
+        onAuthStateChanged(auth, (user) => {
+            document.getElementById('mainBody').className = user ? 'auth-active' : 'unauth';
+        });
+
+        function showToast() {
+            const toast = document.getElementById('customToast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        document.getElementById('dropZone').onclick = () => fileInput.click();
+
+        fileInput.onchange = () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            const statusBox = document.getElementById('uploadStatus');
+            const pBar = document.getElementById('progressBar');
+            
+            statusBox.classList.remove('hidden');
+            pBar.style.width = "30%";
+            
+            reader.onload = (e) => {
+                pBar.style.width = "60%";
+                const base64 = e.target.result.split(',')[1];
+                
+                fetch(scriptURL, {
+                    method: "POST",
+                    body: JSON.stringify({ base64: base64, type: file.type, name: "V2_" + Date.now() + "_" + file.name })
+                })
+                .then(res => res.json())
+                .then(() => {
+                    pBar.style.width = "100%";
+                    setTimeout(() => {
+                        statusBox.classList.add('hidden');
+                        pBar.style.width = "0%";
+                        showToast();
+                    }, 800);
+                })
+                .catch(() => {
+                    alert("Gagal koneksi Cloud!");
+                    statusBox.classList.add('hidden');
+                });
+            };
+            reader.readAsDataURL(file);
+        };
+    </script>
+</body>
+</html>
