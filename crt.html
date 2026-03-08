@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Private - V.02</title>
+    <title>Sekawan Room - V.02</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="c.css">
+    <link rel="stylesheet" href="crt.css">
 </head>
 <body class="unauth" id="mainBody">
 
@@ -34,18 +34,17 @@
         </header>
 
         <main class="px-6 -mt-10 relative z-20 pb-40">
-            <div id="focusArea">
+            <div id="contentArea">
                 <div class="bg-white rounded-[35px] p-10 shadow-xl text-center">
-                    <p class="text-xs font-bold text-slate-400 animate-pulse">MEMBUKA CERITA...</p>
+                    <p class="text-[10px] font-black text-slate-400 animate-pulse tracking-widest">MENGHUBUNGKAN KE SERVER...</p>
                 </div>
             </div>
 
-            <div class="mt-8">
-                <h5 class="text-[10px] font-black text-[#053a6f] uppercase tracking-[0.3em] mb-4 ml-2">
-                    <i class="fa-solid fa- layer-group mr-2"></i>Koleksi Lainnya
+            <div id="archiveSection" class="mt-10 hidden">
+                <h5 class="text-[10px] font-black text-[#053a6f] uppercase tracking-[0.3em] mb-4 ml-2 flex items-center">
+                    <div class="w-1 h-3 bg-[#facc15] mr-2"></div> Arsip Cerita
                 </h5>
-                <div id="listLainnya" class="space-y-3">
-                    </div>
+                <div id="listLainnya" class="space-y-3"></div>
             </div>
         </main>
     </div>
@@ -67,6 +66,6 @@
         </div>
     </nav>
 
-    <script type="module" src="c.js"></script>
+    <script type="module" src="crt.js"></script>
 </body>
 </html>
