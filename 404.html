@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ups! - Sekawan Projects</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .error-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .ghost-icon {
+            font-size: 80px;
+            color: #053a6f;
+            opacity: 0.1;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .btn-request {
+            background: #facc15;
+            color: #053a6f;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(250, 204, 21, 0.3);
+            margin-top: 30px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="pb-36">
+
+    <header class="header-image px-8">
+        <div class="relative z-10 w-full">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 class="text-3xl font-black text-white">404</h1>
+                    <p class="text-[10px] font-bold text-white/70 tracking-[0.3em]">HALAMAN TIDAK ADA</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-md p-3 rounded-2xl border border-white/30">
+                    <i class="fa-solid fa-ghost text-white"></i>
+                </div>
+            </div>
+            <h2 class="text-xl font-extrabold text-white">Nyasar Ya, Sayang?</h2>
+        </div>
+    </header>
+
+    <main class="px-8 mt-10">
+        <div class="bg-white rounded-[35px] p-10 shadow-xl border border-gray-50 error-container">
+            <div class="ghost-icon">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            
+            <h3 class="text-[#053a6f] text-2xl font-black mb-4">Waduh!</h3>
+            
+            <p class="text-gray-500 text-lg font-semibold leading-relaxed">
+                Fantasi belum tersedia. <br>
+                <span class="text-[#053a6f] font-black italic">Mau fantasi apa, yang?</span>
+            </p>
+
+            <a href="https://wa.me/628XXXXXXXXXX?text=Yang,%20aku%20mau%20request%20fantasi..." class="btn-request">
+                <i class="fa-brands fa-whatsapp mr-2"></i> Request ke Suami
+            </a>
+        </div>
+    </main>
+
+    <div class="fixed bottom-6 left-6 right-6 z-50">
+        <nav class="nav-custom">
+            <a href="index.html" class="nav-btn active">
+                <i class="fa-solid fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="index.html?cat=Mertua" class="nav-btn">
+                <i class="fa-solid fa-users-rectangle"></i>
+                <span>Mertua</span>
+            </a>
+            <a href="index.html?cat=3S" class="nav-btn">
+                <i class="fa-solid fa-people-roof"></i>
+                <span>3S</span>
+            </a>
+            <a href="index.html?cat=Party" class="nav-btn">
+                <i class="fa-solid fa-champagne-glasses"></i>
+                <span>Party</span>
+            </a>
+            <a href="index.html?cat=Video" class="nav-btn">
+                <i class="fa-brands fa-twitter"></i>
+                <span>Video</span>
+            </a>
+        </nav>
+    </div>
+
+</body>
+</html>
