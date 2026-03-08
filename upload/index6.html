@@ -7,61 +7,50 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* CSS MURNI DARI LO, BRO */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; padding-bottom: 120px; }
-        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; padding-bottom: 140px; }
+
+        .header-image {
+            background-image: url('20260308_194220.jpg');
+            background-size: cover; background-position: center;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            position: relative; min-height: 200px; display: flex; align-items: flex-end; padding-bottom: 60px;
+        }
+        .header-image::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(5, 58, 111, 0.1) 0%, rgba(5, 58, 111, 0.9) 100%);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        }
+
+        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.5; transition: 0.3s; text-decoration: none; color: white; }
+        .cat-item.active { opacity: 1; transform: scale(1.05); }
+        .cat-icon { width: 42px; height: 42px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #053a6f; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .cat-item.active .cat-icon { background: #053a6f; color: #facc15; border: 1px solid rgba(250, 204, 21, 0.3); }
+        .cat-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
+
+        /* Custom Notification Toast */
+        #customToast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: #053a6f; color: #facc15; padding: 20px; border-radius: 25px;
+            font-weight: 800; font-size: 11px; text-transform: uppercase; width: 85%;
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); transition: 0.5s; z-index: 2000;
+        }
+        #customToast.show { top: 30px; }
+
+        .nav-custom { 
+            position: fixed; bottom: 25px; left: 20px; right: 20px;
+            background: #053a6f; border-radius: 35px; padding: 18px 20px; 
+            box-shadow: 0 15px 40px rgba(5, 58, 111, 0.3); z-index: 1000;
+        }
+
         /* State Auth */
         .login-box { display: none; }
         .gallery-content { display: none; }
         .auth-active .login-box { display: none; }
         .auth-active .gallery-content { display: block; }
         .unauth .login-box { display: flex; }
-
-        /* Header V.02 */
-        .header-v2 {
-            background: linear-gradient(135deg, #053a6f 0%, #0a4d8f 100%);
-            border-bottom-left-radius: 45px; border-bottom-right-radius: 45px;
-            padding: 60px 30px 80px; text-align: center; position: relative;
-        }
-        .header-v2 h1 { color: #fff; font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; }
-        .header-v2 p { color: #facc15; font-size: 10px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; opacity: 0.8; }
-
-        /* Navigasi Bawah Gaya Halaman Utama */
-        .bottom-nav {
-            position: fixed; bottom: 25px; left: 20px; right: 20px;
-            background: #053a6f; border-radius: 30px; padding: 15px 10px;
-            display: flex; justify-content: space-around; align-items: center;
-            box-shadow: 0 15px 35px rgba(5, 58, 111, 0.35); z-index: 1000;
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; transition: 0.3s; }
-        .nav-icon {
-            width: 42px; height: 42px; border-radius: 14px; background: rgba(255,255,255,0.1);
-            display: flex; items-center; justify-content: center; color: rgba(255,255,255,0.5);
-            font-size: 16px; margin-bottom: 6px; transition: 0.3s;
-        }
-        .nav-item span { font-size: 8px; font-weight: 800; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        /* State Active */
-        .nav-item.active .nav-icon { background: #facc15; color: #053a6f; box-shadow: 0 5px 15px rgba(250, 204, 21, 0.3); }
-        .nav-item.active span { color: #facc15; }
-
-        /* Upload Card */
-        .upload-card { background: white; border-radius: 40px; padding: 35px 25px; margin: 0 20px; margin-top: -40px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
-        .drop-zone {
-            border: 2px dashed #f1f5f9; background: #fafafa; border-radius: 30px;
-            padding: 40px 20px; display: flex; flex-direction: column; align-items: center; transition: 0.3s;
-        }
-        .drop-zone:active { transform: scale(0.97); background: #fefce8; border-color: #facc15; }
-
-        /* Toast */
-        #customToast {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            background: #053a6f; color: #facc15; padding: 18px 25px; border-radius: 20px;
-            font-weight: 800; font-size: 11px; text-transform: uppercase; width: 85%;
-            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transition: 0.5s; z-index: 2000;
-        }
-        #customToast.show { top: 30px; }
     </style>
 </head>
 <body class="unauth" id="mainBody">
@@ -69,71 +58,72 @@
     <div id="customToast">Foto/video kamu sudah tersimpan, siap dinikmatin atau dipamerkan.</div>
 
     <div class="login-box fixed inset-0 z-[100] bg-[#053a6f] flex flex-col items-center justify-center px-10">
-        <div class="bg-white p-8 rounded-[45px] shadow-2xl w-full max-w-sm text-center border-b-8 border-yellow-400">
-            <h2 class="text-2xl font-black text-[#053a6f] mb-2 uppercase italic">Brankas V.02</h2>
+        <div class="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-sm text-center">
+            <h2 class="text-2xl font-black text-[#053a6f] mb-2 uppercase italic tracking-tighter">Brankas V.02</h2>
             <p class="text-gray-400 text-[9px] font-bold mb-8 uppercase tracking-[0.3em]">Restricted Access</p>
-            <div class="space-y-4">
+            <div class="space-y-4 text-left">
                 <input type="email" id="loginEmail" placeholder="Email" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f]">
                 <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f]">
-                <button id="btnLogin" class="w-full bg-[#053a6f] text-yellow-400 py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl">Buka</button>
+                <button id="btnLogin" class="w-full bg-[#053a6f] text-[#facc15] py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">Buka Brankas</button>
             </div>
         </div>
     </div>
 
     <div class="gallery-content">
-        <header class="header-v2">
-            <button id="btnLogout" class="absolute top-8 right-8 text-white/30 text-lg"><i class="fa-solid fa-power-off"></i></button>
-            <h1>Cloud Storage V.02</h1>
-            <p>Sekawan Private</p>
+        <header class="header-image px-10">
+            <div class="relative z-10 w-full flex justify-between items-center">
+                <div class="text-white">
+                    <h1 class="text-2xl font-black uppercase italic tracking-tighter leading-none">Cloud Storage</h1>
+                    <p class="text-[9px] font-black text-[#facc15] tracking-[0.4em] uppercase mt-2">Versi 0.02</p>
+                </div>
+                <button id="btnLogout" class="text-white/40 text-lg"><i class="fa-solid fa-power-off"></i></button>
+            </div>
         </header>
 
-        <main>
-            <div class="upload-card">
-                <div class="flex items-center justify-between mb-6 px-2">
-                    <span class="text-[10px] font-black text-[#053a6f] uppercase tracking-widest">Upload Koleksi</span>
-                    <i class="fa-solid fa-shield-halved text-green-500 text-xs"></i>
-                </div>
-
-                <div class="drop-zone" id="dropZone">
+        <main class="px-6 -mt-10 relative z-20">
+            <div class="bg-white rounded-[35px] p-6 shadow-xl border border-slate-50 mb-8 text-center">
+                <div class="border-2 border-dashed border-slate-100 rounded-[30px] p-12 bg-slate-50/50 cursor-pointer active:scale-95 transition-all mb-4" id="dropZone">
                     <input type="file" id="fileInput" class="hidden" accept="image/*,video/*">
-                    <div class="w-16 h-16 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 text-[#053a6f]">
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-md flex items-center justify-center mx-auto mb-4 text-[#053a6f]">
                         <i class="fa-solid fa-plus text-xl"></i>
                     </div>
-                    <p class="text-sm font-black text-[#053a6f]">Pilih File Baru</p>
-                    <p class="text-[9px] text-gray-400 mt-1 font-bold">Foto atau Video</p>
+                    <p class="text-sm font-black text-[#053a6f] uppercase tracking-tighter">Pilih File Baru</p>
+                    <p class="text-[9px] text-gray-400 font-bold mt-1 uppercase">Foto & Video Koleksi</p>
                 </div>
 
-                <div id="uploadStatus" class="mt-6 hidden">
-                    <div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden mb-2">
+                <div id="uploadStatus" class="hidden p-4 bg-slate-50 rounded-2xl">
+                    <div class="w-full bg-slate-200 h-1 rounded-full overflow-hidden mb-2">
                         <div id="progressBar" class="bg-[#053a6f] h-full transition-all duration-300" style="width: 0%"></div>
                     </div>
-                    <p class="text-[9px] font-black text-[#053a6f] uppercase text-center animate-pulse">Sinkronisasi Cloud...</p>
+                    <p class="text-[8px] font-black text-[#053a6f] uppercase animate-pulse">Sinkronisasi Cloud...</p>
                 </div>
             </div>
+
+            <p class="text-center text-slate-300 text-[10px] font-bold uppercase tracking-widest leading-loose">
+                File akan terenkripsi otomatis<br>ke server sekawan project.
+            </p>
         </main>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <div class="nav-icon"><i class="fa-solid fa-heart"></i></div>
-            <span>Suami</span>
-        </a>
-        <a href="index.html" class="nav-item">
-            <div class="nav-icon"><i class="fa-solid fa-users"></i></div>
-            <span>Mertua</span>
-        </a>
-        <a href="index.html" class="nav-item">
-            <div class="nav-icon"><i class="fa-solid fa-user-secret"></i></div>
-            <span>Teman</span>
-        </a>
-        <a href="index.html" class="nav-item">
-            <div class="nav-icon"><i class="fa-solid fa-couch"></i></div>
-            <span>3S</span>
-        </a>
-        <a href="gallery.html" class="nav-item active">
-            <div class="nav-icon"><i class="fa-solid fa-cloud"></i></div>
-            <span>Cloud</span>
-        </a>
+    <nav class="nav-custom">
+        <div class="cat-grid">
+            <a href="index.html" class="cat-item">
+                <div class="cat-icon"><i class="fa-solid fa-heart"></i></div>
+                <span>Suami</span>
+            </a>
+            <a href="index.html" class="cat-item">
+                <div class="cat-icon"><i class="fa-solid fa-users"></i></div>
+                <span>Mertua</span>
+            </a>
+            <a href="index.html" class="cat-item">
+                <div class="cat-icon"><i class="fa-solid fa-user-secret"></i></div>
+                <span>Teman</span>
+            </a>
+            <a href="index.html" class="cat-item">
+                <div class="cat-icon"><i class="fa-solid fa-couch"></i></div>
+                <span>3S</span>
+            </a>
+        </div>
     </nav>
 
     <script type="module">
@@ -153,10 +143,11 @@
         const auth = getAuth(app);
         const scriptURL = "https://script.google.com/macros/s/AKfycbxmYhZ-5C74fQaLMkAgEMjaXTiJiFzMKyzfR0MN6RTkajXWjXyXywvTft8k9S-w32CZ/exec";
 
+        // Login Logic
         document.getElementById('btnLogin').onclick = () => {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(() => alert("Akses Ditolak!"));
+            signInWithEmailAndPassword(auth, email, pass).catch(() => alert("Akses Brankas Ditolak!"));
         };
 
         document.getElementById('btnLogout').onclick = () => signOut(auth);
@@ -168,9 +159,10 @@
         function showToast() {
             const toast = document.getElementById('customToast');
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 4000);
+            setTimeout(() => toast.classList.remove('show'), 4500);
         }
 
+        // Upload Logic
         const fileInput = document.getElementById('fileInput');
         document.getElementById('dropZone').onclick = () => fileInput.click();
 
@@ -203,7 +195,7 @@
                     }, 800);
                 })
                 .catch(() => {
-                    alert("Gagal koneksi Cloud!");
+                    alert("Koneksi Cloud Error!");
                     statusBox.classList.add('hidden');
                 });
             };
