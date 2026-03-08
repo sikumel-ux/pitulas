@@ -9,24 +9,46 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #053a6f; }
+        
+        /* Animasi biar smooth */
+        .login-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .input-group:focus-within { border-color: #053a6f; background: white; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen px-10">
 
-    <div class="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-sm text-center">
-        <div class="w-20 h-20 bg-slate-50 rounded-[25px] flex items-center justify-center mx-auto mb-6 text-[#053a6f] text-3xl shadow-inner">
-            <i class="fa-solid fa-vault"></i>
-        </div>
-        <h2 class="text-2xl font-black text-[#053a6f] mb-2 uppercase italic tracking-tighter">Brankas V.02</h2>
-        <p class="text-gray-400 text-[9px] font-bold mb-8 uppercase tracking-[0.3em]">Restricted Access</p>
+    <div class="login-card bg-white p-8 rounded-[45px] shadow-2xl w-full max-w-sm text-center relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#facc15]/10 rounded-full"></div>
         
-        <div class="space-y-4 text-left">
-            <input type="email" id="loginEmail" placeholder="Email" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f] text-sm">
-            <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f] text-sm">
-            <button id="btnLogin" class="w-full bg-[#053a6f] text-[#facc15] py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">Buka Brankas</button>
+        <div class="relative z-10 mb-8">
+            <img src="fantasi.png" alt="Logo Fantasi" class="w-32 h-32 mx-auto drop-shadow-lg object-contain">
+        </div>
+
+        <h2 class="text-2xl font-black text-[#053a6f] mb-1 uppercase italic tracking-tighter"> V.02</h2>
+        <p class="text-gray-400 text-[9px] font-bold mb-8 uppercase tracking-[0.3em]">Restricted Access Only</p>
+        
+        <div class="space-y-4 text-left relative z-10">
+            <div class="input-group flex items-center p-4 rounded-2xl bg-slate-50 border border-slate-100 transition-all">
+                <i class="fa-solid fa-envelope text-slate-300 mr-3"></i>
+                <input type="email" id="loginEmail" placeholder="Email" class="w-full bg-transparent font-bold outline-none text-sm text-[#053a6f]">
+            </div>
+
+            <div class="input-group flex items-center p-4 rounded-2xl bg-slate-50 border border-slate-100 transition-all">
+                <i class="fa-solid fa-lock text-slate-300 mr-3"></i>
+                <input type="password" id="loginPass" placeholder="Password" class="w-full bg-transparent font-bold outline-none text-sm text-[#053a6f]">
+                <button type="button" id="togglePass" class="text-slate-300 hover:text-[#053a6f] transition-colors px-1">
+                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
+
+            <button id="btnLogin" class="w-full bg-[#053a6f] text-[#facc15] py-4 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all mt-4">
+                Masuk
+            </button>
         </div>
         
-        <p id="errorMsg" class="text-red-500 text-[10px] font-bold mt-4 uppercase hidden">Akses Ditolak!</p>
+        <p id="errorMsg" class="text-red-500 text-[10px] font-black mt-6 uppercase hidden animate-bounce">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i> Akses Ditolak!
+        </p>
     </div>
 
     <script type="module">
@@ -45,20 +67,40 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Jika sudah login, langsung lempar ke index
+        // FITUR SHOW/HIDE PASSWORD
+        const togglePass = document.getElementById('togglePass');
+        const passInput = document.getElementById('loginPass');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePass.onclick = () => {
+            const isPass = passInput.type === "password";
+            passInput.type = isPass ? "text" : "password";
+            
+            // Ganti Icon Font Awesome
+            eyeIcon.className = isPass ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+        };
+
+        // Redirect kalau sudah login
         onAuthStateChanged(auth, (user) => {
             if (user) window.location.href = "index.html";
         });
 
+        // Handler Login
         document.getElementById('btnLogin').onclick = () => {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
+            const btn = document.getElementById('btnLogin');
             const err = document.getElementById('errorMsg');
+
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i>';
+            btn.disabled = true;
 
             signInWithEmailAndPassword(auth, email, pass)
                 .then(() => window.location.href = "index.html")
                 .catch(() => {
                     err.classList.remove('hidden');
+                    btn.innerHTML = 'Buka Brankas';
+                    btn.disabled = false;
                     setTimeout(() => err.classList.add('hidden'), 3000);
                 });
         };
