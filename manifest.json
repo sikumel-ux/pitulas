@@ -1,0 +1,15 @@
+{
+  "name": "Fantasi Kita",
+  "short_name": "Fantasi",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#053a6f",
+  "theme_color": "#053a6f",
+  "icons": [
+    {
+      "src": "fantasi.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
