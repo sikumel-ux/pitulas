@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sekawan Projects - Cerita Tiwi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="17.css">
+</head>
+<body class="bg-[#f5f5f5] pb-24">
+
+    <header class="header-gradient pt-12 pb-20 px-6 text-white relative shadow-lg">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight" id="clock">--:--</h1>
+                <p class="text-xs opacity-70 font-medium" id="date-display">08 - 03 - 2026</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20">
+                <i class="fa-solid fa-crown text-[#facc15]"></i>
+            </div>
+        </div>
+        
+        <div class="mt-4 animate-fade-in">
+            <p class="text-[10px] uppercase tracking-[0.2em] opacity-60 font-bold">Terbaru Untukmu</p>
+            <h2 class="text-xl font-semibold mt-1 leading-tight">Petualangan Liar Tiwi & Sahabat</h2>
+        </div>
+    </header>
+
+    <div class="flex space-x-3 px-6 -mt-6 overflow-x-auto no-scrollbar relative z-10">
+        <button class="chip active">Semua</button>
+        <button class="chip">3S</button>
+        <button class="chip">4P</button>
+        <button class="chip">Swinger</button>
+        <button class="chip">Voyeur</button>
+    </div>
+
+    <main class="px-6 mt-8">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-[#053a6f] font-bold text-lg">Daftar Cerita</h3>
+            <span class="text-xs text-gray-400 font-medium">Lihat Semua</span>
+        </div>
+        
+        <div id="loading" class="flex justify-center py-20">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#053a6f]"></div>
+        </div>
+
+        <div id="story-list" class="space-y-6">
+            </div>
+    </main>
+
+    <nav class="fixed bottom-6 left-6 right-6 bg-white/80 backdrop-blur-xl border border-white/20 px-8 py-4 flex justify-between items-center rounded-[30px] shadow-2xl z-50">
+        <i class="fa-solid fa-house text-[#053a6f] text-xl"></i>
+        <i class="fa-solid fa-magnifying-glass text-gray-300 text-xl"></i>
+        <i class="fa-solid fa-bookmark text-gray-300 text-xl"></i>
+        <a href="admin.html"><i class="fa-solid fa-user-gear text-gray-300 text-xl"></i></a>
+    </nav>
+
+    <script type="module" src="17.js"></script>
+</body>
+</html>
