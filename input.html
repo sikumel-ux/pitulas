@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Sekawan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; pb-20; }
+        
+        .header-image {
+            background-image: url('20260308_194220.jpg');
+            background-size: cover; background-position: center;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            position: relative; min-height: 180px;
+        }
+        .header-image::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(5, 58, 111, 0.2) 0%, rgba(5, 58, 111, 0.9) 100%);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        }
+
+        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.5; transition: 0.3s; }
+        .cat-item.active { opacity: 1; transform: scale(1.05); }
+        .cat-icon { width: 45px; height: 45px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #053a6f; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .cat-item.active .cat-icon { background: #053a6f; color: #facc15; }
+        .cat-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
+
+        .custom-input { width: 100%; padding: 18px; border-radius: 20px; background: #f8fafc; border: 1px solid #e2e8f0; font-weight: 600; outline: none; transition: 0.3s; font-size: 14px; }
+        .custom-input:focus { border-color: #053a6f; background: white; }
+
+        .btn-action { padding: 18px; border-radius: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 100%; }
+        .btn-save { background: #053a6f; color: #facc15; box-shadow: 0 10px 20px rgba(5, 58, 111, 0.2); }
+        .btn-cancel { background: #ef4444; color: white; margin-top: 10px; display: none; }
+
+        .list-card { background: white; border-radius: 25px; padding: 15px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <header class="header-image pt-10 pb-12 px-8 text-white relative">
+        <div class="relative z-10 flex justify-between items-center">
+            <a href="index.html" class="opacity-80"><i class="fa-solid fa-arrow-left mr-2"></i> Ke Web</a>
+            <h2 class="text-xl font-black uppercase tracking-tighter">Brankas Admin</h2>
+        </div>
+    </header>
+
+    <main class="px-6 -mt-10 relative z-20">
+        <div class="bg-white rounded-[35px] p-6 shadow-2xl space-y-5 mb-10">
+            <h3 id="formTitle" class="text-[#053a6f] font-black uppercase text-sm mb-2"><i class="fa-solid fa-pen-nib mr-2"></i>Tulis Cerita Baru</h3>
+            
+            <div class="cat-grid" id="categorySelector">
+                <div class="cat-item" data-cat="Suami"><div class="cat-icon"><i class="fa-solid fa-house-user"></i></div><span>Suami</span></div>
+                <div class="cat-item" data-cat="Mertua"><div class="cat-icon"><i class="fa-solid fa-users-rectangle"></i></div><span>Mertua</span></div>
+                <div class="cat-item" data-cat="3S"><div class="cat-icon"><i class="fa-solid fa-people-roof"></i></div><span>3S</span></div>
+                <div class="cat-item" data-cat="Teman"><div class="cat-icon"><i class="fa-solid fa-user-group"></i></div><span>Teman</span></div>
+                <div class="cat-item" data-cat="Party"><div class="cat-icon"><i class="fa-solid fa-glass-cheers"></i></div><span>Party</span></div>
+                <div class="cat-item" data-cat="Video"><div class="cat-icon"><i class="fa-brands fa-twitter"></i></div><span>Video</span></div>
+            </div>
+
+            <input type="text" id="judul" class="custom-input" placeholder="Judul Fantasi">
+            <textarea id="isi" rows="6" class="custom-input" placeholder="Tulis alur ceritanya di sini..."></textarea>
+            
+            <input type="hidden" id="editId">
+            <button id="btnPublish" class="btn-action btn-save">Publish Sekarang</button>
+            <button id="btnCancel" class="btn-action btn-cancel">Batal Edit</button>
+        </div>
+
+        <h3 class="text-[#053a6f] font-black uppercase text-xs mb-4 ml-2">Daftar Cerita Terbit</h3>
+        <div id="admin-list" class="space-y-3 pb-10">
+            <div class="text-center py-10 opacity-30 font-bold italic">Memuat data...</div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let selectedCat = "";
+        let allCerita = [];
+
+        // Setup Category Click
+        document.querySelectorAll('.cat-item').forEach(item => {
+            item.onclick = () => {
+                document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                selectedCat = item.dataset.cat;
+            };
+        });
+
+        // Get Data Real-time
+        const q = query(collection(db, "cerita"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            allCerita = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderAdminList();
+        });
+
+        function renderAdminList() {
+            const listContainer = document.getElementById('admin-list');
+            listContainer.innerHTML = '';
+            allCerita.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'list-card';
+                div.innerHTML = `
+                    <div class="flex-1 pr-4">
+                        <p class="text-[8px] font-black text-blue-400 uppercase">${item.kategori}</p>
+                        <h4 class="font-bold text-gray-800 text-sm line-clamp-1">${item.judul}</h4>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editData('${item.id}')" class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteData('${item.id}')" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        // Action: Publish / Update
+        document.getElementById('btnPublish').onclick = async () => {
+            const judul = document.getElementById('judul').value;
+            const isi = document.getElementById('isi').value;
+            const editId = document.getElementById('editId').value;
+            
+            if(!selectedCat || !judul || !isi) return alert("Lengkapi data, Bro!");
+
+            const d = new Date();
+            const tgl = `${String(d.getDate()).padStart(2, '0')} - ${String(d.getMonth() + 1).padStart(2, '0')} - ${d.getFullYear()}`;
+
+            try {
+                if(editId) {
+                    // UPDATE
+                    await updateDoc(doc(db, "cerita", editId), {
+                        judul, kategori: selectedCat, isi, tanggal: tgl
+                    });
+                    alert("Berhasil Diupdate!");
+                    resetForm();
+                } else {
+                    // NEW
+                    await addDoc(collection(db, "cerita"), {
+                        judul, kategori: selectedCat, isi, tanggal: tgl, createdAt: serverTimestamp()
+                    });
+                    alert("Berhasil Terbit!");
+                    resetForm();
+                }
+            } catch (e) { alert(e.message); }
+        };
+
+        window.editData = (id) => {
+            const data = allCerita.find(c => c.id === id);
+            document.getElementById('judul').value = data.judul;
+            document.getElementById('isi').value = data.isi;
+            document.getElementById('editId').value = data.id;
+            selectedCat = data.kategori;
+
+            // Highlight Category
+            document.querySelectorAll('.cat-item').forEach(i => {
+                i.classList.toggle('active', i.dataset.cat === data.kategori);
+            });
+
+            // UI Changes
+            document.getElementById('formTitle').innerText = "Mode Edit Cerita";
+            document.getElementById('btnPublish').innerText = "Simpan Perubahan";
+            document.getElementById('btnCancel').style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.deleteData = async (id) => {
+            if(confirm("Yakin mau hapus fantasi ini, Bro?")) {
+                await deleteDoc(doc(db, "cerita", id));
+            }
+        };
+
+        window.resetForm = () => {
+            document.getElementById('judul').value = "";
+            document.getElementById('isi').value = "";
+            document.getElementById('editId').value = "";
+            document.getElementById('formTitle').innerText = "Tulis Cerita Baru";
+            document.getElementById('btnPublish').innerText = "Publish Sekarang";
+            document.getElementById('btnCancel').style.display = "none";
+            document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+            selectedCat = "";
+        };
+
+        document.getElementById('btnCancel').onclick = resetForm;
+    </script>
+</body>
+  </html>
+  
