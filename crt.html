@@ -23,38 +23,56 @@
     </div>
 
     <div class="gallery-content">
-        <header class="header-image px-10">
-            <div class="relative z-10 w-full flex flex-col h-full">
-                <div class="flex justify-between items-center mt-6">
+        <header class="header-image px-10 pt-10">
+            <div class="relative z-10 w-full">
+                <div class="flex justify-between items-center mb-6">
                     <div class="text-white">
-                        <h1 class="text-2xl font-black uppercase italic tracking-tighter leading-none">Sekawan Room</h1>
-                        <p class="text-[9px] font-black text-[#facc15] tracking-[0.4em] uppercase mt-2">Private Access</p>
+                        <h1 class="text-3xl font-black italic tracking-tighter leading-none">Fantasi Kita</h1>
+                        <p class="text-[9px] font-bold text-white/60 tracking-[0.2em] uppercase mt-2">08 - 03 - 2026</p>
                     </div>
                     <button id="btnLogout" class="text-white/40 text-lg"><i class="fa-solid fa-power-off"></i></button>
                 </div>
                 
-                <div class="cat-grid mt-auto mb-[-30px]">
-                    <div class="cat-item active" onclick="loadData()">
-                        <div class="cat-icon"><i class="fa-solid fa-heart"></i></div>
-                        <span>Suami</span>
-                    </div>
-                    <div class="cat-item" onclick="alert('Coming Soon!')">
-                        <div class="cat-icon"><i class="fa-solid fa-users"></i></div>
-                        <span>Mertua</span>
-                    </div>
-                    <div class="cat-item" onclick="alert('Coming Soon!')">
-                        <div class="cat-icon"><i class="fa-solid fa-user-secret"></i></div>
-                        <span>Teman</span>
-                    </div>
-                    <div class="cat-item" onclick="alert('Coming Soon!')">
-                        <div class="cat-icon"><i class="fa-solid fa-couch"></i></div>
-                        <span>3S</span>
+                <div class="nav-box-header">
+                    <div class="grid grid-cols-4 gap-y-6">
+                        <div class="cat-item active" onclick="loadData()">
+                            <div class="cat-icon"><i class="fa-solid fa-house"></i></div>
+                            <span>Semua</span>
+                        </div>
+                        <div class="cat-item">
+                            <div class="cat-icon"><i class="fa-solid fa-heart"></i></div>
+                            <span>Suami</span>
+                        </div>
+                        <div class="cat-item">
+                            <div class="cat-icon"><i class="fa-solid fa-users"></i></div>
+                            <span>Mertua</span>
+                        </div>
+                        <div class="cat-item">
+                            <div class="cat-icon"><i class="fa-solid fa-couch"></i></div>
+                            <span>3S</span>
+                        </div>
+                        <div class="cat-item">
+                            <div class="cat-icon"><i class="fa-solid fa-user-secret"></i></div>
+                            <span>Teman</span>
+                        </div>
+                        <div class="cat-item">
+                            <div class="cat-icon"><i class="fa-solid fa-glass-cheers"></i></div>
+                            <span>Party</span>
+                        </div>
+                        <div class="cat-item">
+                            <div class="cat-icon"><i class="fa-brands fa-twitter"></i></div>
+                            <span>Video</span>
+                        </div>
+                        <a href="admin.html" class="cat-item">
+                            <div class="cat-icon text-yellow-500"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                            <span>Upload</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </header>
 
-        <main class="px-6 mt-16 relative z-20 pb-40">
+        <main class="px-6 mt-32 relative z-20 pb-40">
             <div id="contentArea">
                 </div>
 
@@ -67,23 +85,32 @@
         </main>
     </div>
 
-    <nav class="nav-custom">
-        <div class="nav-grid-main">
-            <a href="index.html" class="nav-main-item active">
-                <i class="fa-solid fa-house-chimney"></i>
-                <span>Beranda</span>
+    <nav class="nav-bottom-navy">
+        <div class="nav-grid">
+            <a href="index.html" class="nav-btn active">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
             </a>
-            <a href="gallery.html" class="nav-main-item">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                <span>Cloud</span>
+            <a href="#" class="nav-btn">
+                <i class="fa-solid fa-users"></i>
+                <span>Mertua</span>
             </a>
-            <a href="admin.html" class="nav-main-item">
-                <i class="fa-solid fa-pen-nib"></i>
-                <span>Tulis</span>
+            <a href="#" class="nav-btn">
+                <i class="fa-solid fa-couch"></i>
+                <span>3S</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <i class="fa-solid fa-glass-cheers"></i>
+                <span>Party</span>
+            </a>
+            <a href="#" class="nav-btn">
+                <i class="fa-brands fa-twitter"></i>
+                <span>Video</span>
             </a>
         </div>
     </nav>
 
     <script type="module" src="crt.js"></script>
 </body>
-</html>
+                    </html>
+                    
