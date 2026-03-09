@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Gallery V.02</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #053a6f; color: white; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 20px; }
+        .media-card { background: rgba(255,255,255,0.05); border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 1/1; border: 1px solid rgba(255,255,255,0.1); }
+        .media-card img, .media-card video { width: 100%; height: 100%; object-fit: cover; }
+        .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #facc15; font-size: 24px; opacity: 0.8; }
+        .nav-back { position: fixed; top: 20px; left: 20px; z-index: 100; background: #facc15; color: #053a6f; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+
+    <a href="storage.html" class="nav-back"><i class="fa-solid fa-chevron-left"></i></a>
+
+    <header class="pt-16 pb-6 px-8">
+        <h1 class="text-3xl font-black uppercase italic tracking-tighter italic">Vault Gallery</h1>
+        <p class="text-[9px] font-black text-[#facc15] tracking-[0.4em] uppercase mt-2">Private Collection</p>
+    </header>
+
+    <div id="loading" class="text-center py-20">
+        <i class="fa-solid fa-circle-notch animate-spin text-3xl text-[#facc15]"></i>
+        <p class="text-[10px] font-bold mt-4 opacity-50 uppercase tracking-widest">Membuka Brankas...</p>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid"></div>
+
+    <script>
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxmYhZ-5C74fQaLMkAgEMjaXTiJiFzMKyzfR0MN6RTkajXWjXyXywvTft8k9S-w32CZ/exec";
+
+        async function loadGallery() {
+            try {
+                const response = await fetch(scriptURL);
+                const data = await response.json();
+                const container = document.getElementById('galleryGrid');
+                const loader = document.getElementById('loading');
+                
+                loader.style.display = 'none';
+                container.innerHTML = '';
+
+                data.forEach(file => {
+                    const card = document.createElement('div');
+                    card.className = 'media-card';
+                    
+                    if (file.type.includes('video')) {
+                        // Jika Video, tampilin preview iframe atau video tag
+                        card.innerHTML = `
+                            <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                            <img src="https://lh3.googleusercontent.com/u/0/d/${file.id}" onerror="this.src='https://placehold.co/400x400/053a6f/facc15?text=VIDEO'">
+                        `;
+                        card.onclick = () => window.open(`https://drive.google.com/file/d/${file.id}/view`, '_blank');
+                    } else {
+                        // Jika Foto
+                        card.innerHTML = `<img src="${file.url}" loading="lazy">`;
+                        card.onclick = () => window.open(file.url, '_blank');
+                    }
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Gagal load gallery:", error);
+            }
+        }
+
+        loadGallery();
+    </script>
+</body>
+  </html>
+  
