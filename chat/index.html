@@ -2,34 +2,158 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mojok</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Private Chat - Fantasi Kita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #053a6f; overflow: hidden; }
+        .chat-bubble-me { background: #facc15; color: #053a6f; border-radius: 20px 20px 4px 20px; }
+        .chat-bubble-tiwi { background: rgba(255,255,255,0.1); color: white; border-radius: 20px 20px 20px 4px; }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
 </head>
-<body>
+<body class="flex flex-col h-screen">
 
-<div class="glass-container">
-    <header>
-        <h2>Beranda</h2>
+    <header class="p-6 border-b border-white/10 flex justify-between items-center bg-[#053a6f]">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-white/50"><i class="fa-solid fa-chevron-left"></i></a>
+            <div class="w-10 h-10 rounded-full bg-[#facc15] flex items-center justify-center font-black text-[#053a6f]">T</div>
+            <div>
+                <h2 class="text-white font-black text-sm uppercase italic tracking-tighter">Tiwi</h2>
+                <p class="text-[8px] text-[#facc15] font-black uppercase tracking-widest animate-pulse">Online & Wet</p>
+            </div>
+        </div>
+        <i class="fa-solid fa-ellipsis-vertical text-white/30"></i>
     </header>
 
-    <div class="tweet-box">
-        <textarea id="tweetInput" placeholder="Apa yang terjadi?"></textarea>
-        <div class="actions">
-            <label for="fileInput" class="upload-btn">
-                <span>📷 Foto/Video</span>
-                <input type="file" id="fileInput" accept="image/*,video/*" hidden>
-            </label>
-            <button id="postBtn" onclick="sendTweet()">Posting</button>
+    <div id="chatBox" class="flex-1 overflow-y-auto p-6 space-y-6 flex flex-col">
         </div>
-        <div id="previewContainer"></div>
-    </div>
 
-    <div id="timeline" class="timeline">
+    <footer class="p-6 bg-[#053a6f] border-t border-white/10">
+        <div id="uploadPreview" class="hidden mb-4 p-2 bg-white/5 rounded-xl border border-dashed border-white/20">
+            <p class="text-[8px] font-black text-[#facc15] uppercase p-2">Siap Kirim Foto...</p>
         </div>
-</div>
+        
+        <div class="flex items-center gap-3 bg-white/10 p-2 rounded-[30px] border border-white/5">
+            <button onclick="document.getElementById('fileInput').click()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#facc15] transition active:scale-90">
+                <i class="fa-solid fa-camera"></i>
+            </button>
+            <input type="file" id="fileInput" class="hidden" accept="image/*">
+            
+            <input type="text" id="msgInput" placeholder="Kirim pesan nakal..." class="flex-1 bg-transparent border-none outline-none text-white text-xs font-bold px-2 placeholder:text-white/20">
+            
+            <button id="btnSend" class="w-10 h-10 rounded-full bg-[#facc15] text-[#053a6f] flex items-center justify-center transition active:scale-90 shadow-lg shadow-[#facc15]/20">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </footer>
 
-<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-<script src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxmYhZ-5C74fQaLMkAgEMjaXTiJiFzMKyzfR0MN6RTkajXWjXyXywvTft8k9S-w32CZ/exec";
+
+        const chatBox = document.getElementById('chatBox');
+        const msgInput = document.getElementById('msgInput');
+        const btnSend = document.getElementById('btnSend');
+        const fileInput = document.getElementById('fileInput');
+
+        // 1. Ambil Pesan Real-time
+        const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+        onSnapshot(q, (snapshot) => {
+            chatBox.innerHTML = '';
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const isMe = data.sender === "Dimas";
+                
+                const div = document.createElement('div');
+                div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} w-full`;
+                
+                let content = data.text ? `<p class="text-[11px] leading-relaxed font-bold">${data.text}</p>` : '';
+                if(data.img) {
+                    content += `<img src="${data.img}" class="rounded-xl mt-2 border border-white/10 w-full object-cover shadow-xl">`;
+                }
+
+                div.innerHTML = `
+                    <div class="max-w-[75%] p-4 shadow-2xl ${isMe ? 'chat-bubble-me' : 'chat-bubble-tiwi'}">
+                        ${content}
+                        <p class="text-[7px] mt-2 opacity-40 font-black uppercase tracking-widest">
+                            ${data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}
+                        </p>
+                    </div>
+                `;
+                chatBox.appendChild(div);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        // 2. Fungsi Kirim Teks
+        async function sendMsg() {
+            const val = msgInput.value.trim();
+            if(!val) return;
+            
+            await addDoc(collection(db, "messages"), {
+                sender: "Dimas",
+                text: val,
+                createdAt: serverTimestamp()
+            });
+            msgInput.value = '';
+        }
+
+        btnSend.onclick = sendMsg;
+        msgInput.onkeypress = (e) => { if(e.key === 'Enter') sendMsg(); };
+
+        // 3. Fungsi Kirim Foto (Via Google Drive Apps Script)
+        fileInput.onchange = () => {
+            const file = fileInput.files[0];
+            if(!file) return;
+
+            document.getElementById('uploadPreview').classList.remove('hidden');
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64 = e.target.result.split(',')[1];
+                
+                try {
+                    const res = await fetch(scriptURL, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            base64: base64,
+                            type: file.type,
+                            name: "CHAT_" + Date.now() + "_" + file.name
+                        })
+                    });
+                    const result = await res.json();
+                    
+                    if(result.result === "success") {
+                        // Link URL file Drive dari Apps Script masuk ke Firestore
+                        await addDoc(collection(db, "messages"), {
+                            sender: "Dimas",
+                            img: result.url, 
+                            createdAt: serverTimestamp()
+                        });
+                    }
+                } catch (err) {
+                    alert("Gagal kirim foto!");
+                } finally {
+                    document.getElementById('uploadPreview').classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+    </script>
 </body>
 </html>
