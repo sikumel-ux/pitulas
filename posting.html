@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sekawan - Koleksi Cerita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+        }
+
+        .img-container {
+            width: 100%;
+            aspect-ratio: 3/4; /* Konsisten Vertikal */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(5, 58, 111, 0.8);
+            color: #facc15;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Category Slider */
+        .cat-chip {
+            flex: 0 0 auto;
+            padding: 10px 20px;
+            border-radius: 15px;
+            background: white;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            border: 1px solid #f1f5f9;
+            transition: 0.3s;
+        }
+        .cat-chip.active {
+            background: #053a6f;
+            color: #facc15;
+            box-shadow: 0 8px 15px rgba(5, 58, 111, 0.2);
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <header class="sticky top-0 z-50 bg-[#f8fafc]/80 backdrop-blur-md px-6 py-4 flex justify-between items-center">
+        <div>
+            <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Selamat Datang</p>
+            <h1 class="text-xl font-extrabold text-[#053a6f]">Koleksi Sekawan</h1>
+        </div>
+        <a href="admin.html" class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-[#053a6f]">
+            <i class="fa-solid fa-user-shield"></i>
+        </a>
+    </header>
+
+    <div class="flex overflow-x-auto gap-3 px-6 py-2 no-scrollbar" id="filterContainer">
+        <button class="cat-chip active" data-filter="all">Semua</button>
+        <button class="cat-chip" data-filter="Suami">Suami</button>
+        <button class="cat-chip" data-filter="Mertua">Mertua</button>
+        <button class="cat-chip" data-filter="3S">3S</button>
+        <button class="cat-chip" data-filter="Teman">Teman</button>
+        <button class="cat-chip" data-filter="Party">Party</button>
+    </div>
+
+    <main class="px-6 mt-6 space-y-8" id="feed-container">
+        <div class="animate-pulse space-y-4">
+            <div class="bg-gray-200 rounded-[30px] aspect-[3/4]"></div>
+            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+        </div>
+    </main>
+
+    <nav class="fixed bottom-6 left-6 right-6 h-16 nav-glass rounded-3xl flex items-center justify-around px-4 z-50 shadow-xl">
+        <button class="text-[#053a6f] text-xl"><i class="fa-solid fa-house-chimney"></i></button>
+        <button class="text-gray-400 text-xl"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="text-gray-400 text-xl"><i class="fa-solid fa-heart"></i></button>
+        <button class="text-gray-400 text-xl"><i class="fa-solid fa-bookmark"></i></button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let currentFilter = "all";
+
+        // Ambil data (Hanya yang statusnya 'published')
+        const q = query(
+            collection(db, "cerita"), 
+            where("status", "==", "published"),
+            orderBy("createdAt", "desc")
+        );
+
+        onSnapshot(q, (snapshot) => {
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderFeed(data);
+        });
+
+        function renderFeed(items) {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+
+            const filtered = currentFilter === "all" 
+                ? items 
+                : items.filter(i => i.kategori === currentFilter);
+
+            if(filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-20">
+                        <i class="fa-solid fa-box-open text-4xl text-gray-200 mb-4"></i>
+                        <p class="text-gray-400 font-bold">Belum ada cerita di kategori ini.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.innerHTML = `
+                    <div class="img-container">
+                        <span class="category-badge">${item.kategori}</span>
+                        <img src="${item.urlGambar || 'https://via.placeholder.com/600x800'}" alt="${item.judul}">
+                    </div>
+                    <div class="p-6">
+                        <h2 class="text-lg font-extrabold text-[#053a6f] leading-tight mb-2">${item.judul}</h2>
+                        <p class="text-gray-500 text-sm line-clamp-3 mb-4">${item.isi}</p>
+                        <div class="flex justify-between items-center border-t pt-4 border-gray-50">
+                            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">
+                                <i class="fa-regular fa-clock mr-1"></i> ${new Date(item.createdAt?.toDate()).toLocaleDateString('id-ID')}
+                            </span>
+                            <button class="text-[#053a6f] font-black text-xs uppercase tracking-widest">Baca Cerita <i class="fa-solid fa-chevron-right ml-1"></i></button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Logic Filter Klik
+        document.querySelectorAll('.cat-chip').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                // Re-render data yang sudah ada di memory
+                location.reload(); // Simple way to re-trigger onSnapshot or just filter current array
+            };
+        });
+    </script>
+</body>
+</html>
