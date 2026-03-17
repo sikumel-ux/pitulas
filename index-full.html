@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flyntasify - Cerita Tanpa Batas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="fantasi-full.css">
+    <style>
+        /* Loading Screen */
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #053a6f; z-index: 9999; display: flex; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body class="pb-36">
+
+    <div id="loading-overlay">
+        <div class="flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-[#facc15] mb-4"></div>
+            <p class="text-[#facc15] font-black tracking-widest text-xs uppercase">Memuat Fantasi...</p>
+        </div>
+    </div>
+
+    <header class="header-image px-8">
+        <div class="relative z-10 w-full">
+            <div class="flex justify-between items-center mb-4 pt-8">
+                <h1 class="text-3xl font-black text-white" id="clock">00:00</h1>
+            </div>
+            <h2 class="text-xl font-extrabold text-white">Flyntasify</h2>
+            <p class="text-[10px] text-white/60 font-bold uppercase tracking-[0.2em]">Koleksi Cerita Premium</p>
+        </div>
+    </header>
+
+    <div class="px-6 -mt-8 relative z-20">
+        <div class="bg-white/95 backdrop-blur-md rounded-[30px] p-5 shadow-xl">
+            <div class="cat-grid">
+                <div class="cat-item active" onclick="filterCategory('Semua', this)"><div class="cat-icon"><i class="fa-solid fa-house"></i></div><span>Semua</span></div>
+                <div class="cat-item" onclick="filterCategory('Suami', this)"><div class="cat-icon"><i class="fa-solid fa-heart"></i></div><span>Suami</span></div>
+                <div class="cat-item" onclick="filterCategory('Mertua', this)"><div class="cat-icon"><i class="fa-solid fa-heart-pulse"></i></div><span>Mertua</span></div>
+                <div class="cat-item" onclick="filterCategory('3S', this)"><div class="cat-icon"><i class="fa-solid fa-users"></i></div><span>3S</span></div>
+                <div class="cat-item" onclick="filterCategory('Teman', this)"><div class="cat-icon"><i class="fa-solid fa-face-grin-hearts"></i></div><span>Teman</span></div>
+                <div class="cat-item" onclick="filterCategory('Party', this)"><div class="cat-icon"><i class="fa-solid fa-couch"></i></div><span>Party</span></div>
+                <div class="cat-item" onclick="filterCategory('Video', this)"><div class="cat-icon"><i class="fa-brands fa-twitter"></i></div><span>Video</span></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="px-6 mt-8 space-y-8" id="content-list">
+        </main>
+
+    <div class="fixed bottom-6 left-6 right-6 z-50">
+        <nav class="nav-custom">
+            <div class="nav-btn active" onclick="filterCategory('Semua', this)"><i class="fa-solid fa-home"></i><span>Home</span></div>
+            <div class="nav-btn" onclick="filterCategory('Mertua', this)"><i class="fa-solid fa-heart-pulse"></i><span>Mertua</span></div>
+            <div class="nav-btn" onclick="filterCategory('3S', this)"><i class="fa-solid fa-users"></i><span>3S</span></div>
+            <div class="nav-btn" id="btnBottomLogout"><i class="fa-solid fa-power-off"></i><span>Logout</span></div>
+        </nav>
+    </div>
+
+    <script type="module" src="fantasi-full.js"></script>
+    <script>
+        // Update Jam Realtime
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const clock = document.getElementById('clock');
+            if(clock) clock.textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateTime, 1000); 
+        updateTime();
+    </script>
+</body>
+                                                                            </html>
+                                                                            
