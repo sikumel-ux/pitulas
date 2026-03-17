@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sekawan - Reader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding-bottom: 100px; }
+        
+        .header-top {
+            background: #053a6f;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            padding: 45px 25px 35px;
+        }
+
+        /* Card Story 3:4 */
+        .story-card { aspect-ratio: 3/4; border-radius: 30px; overflow: hidden; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.08); background: #fff; }
+        .story-overlay { 
+            position: absolute; inset: 0; 
+            background: linear-gradient(0deg, rgba(5, 58, 111, 0.95) 0%, rgba(5, 58, 111, 0.2) 60%, transparent 100%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 18px;
+        }
+
+        /* Floating Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            background: #053a6f; border-radius: 25px; display: flex; 
+            justify-content: space-around; padding: 15px; z-index: 100;
+            box-shadow: 0 15px 30px rgba(5, 58, 111, 0.4);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: white; opacity: 0.5; transition: 0.3s; }
+        .nav-item.active { opacity: 1; color: #facc15; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+        .nav-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
+
+        /* Reader View */
+        #reader { position: fixed; inset: 0; background: white; z-index: 200; display: none; overflow-y: auto; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-card { animation: fadeInUp 0.4s ease forwards; }
+    </style>
+</head>
+<body>
+
+    <div class="header-top text-white">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black italic tracking-tighter text-[#facc15]">SEKAWAN</h1>
+                <p class="text-[9px] font-bold opacity-60 tracking-[3px] uppercase">Digital Library</p>
+            </div>
+            <a href="admin.html" class="opacity-40"><i class="fa-solid fa-fingerprint text-2xl"></i></a>
+        </div>
+    </div>
+
+    <main class="px-5 py-8">
+        <div class="grid grid-cols-2 gap-4" id="user-grid">
+            <div class="story-card animate-pulse bg-gray-200"></div>
+            <div class="story-card animate-pulse bg-gray-200"></div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button onclick="filterCat('Semua')" class="nav-item active" data-nav="Semua"><i class="fa-solid fa-ghost"></i><span>Explore</span></button>
+        <button onclick="filterCat('Suami')" class="nav-item" data-nav="Suami"><i class="fa-solid fa-house-user"></i><span>Suami</span></button>
+        <button onclick="filterCat('Mertua')" class="nav-item" data-nav="Mertua"><i class="fa-solid fa-heart"></i><span>Mertua</span></button>
+        <button onclick="filterCat('3S')" class="nav-item" data-nav="3S"><i class="fa-solid fa-fire"></i><span>3S</span></button>
+        <button onclick="filterCat('Teman')" class="nav-item" data-nav="Teman"><i class="fa-solid fa-comment"></i><span>Teman</span></button>
+    </nav>
+
+    <div id="reader">
+        <div class="relative w-full h-[55vh]">
+            <img id="viewImg" class="w-full h-full object-cover">
+            <button onclick="closeReader()" class="absolute top-6 left-6 w-10 h-10 bg-black/40 backdrop-blur-md text-white rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="p-8 -mt-10 bg-white rounded-t-[40px] relative z-10 min-h-screen">
+            <span id="viewCat" class="bg-yellow-100 text-[#053a6f] px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest"></span>
+            <h2 id="viewJudul" class="text-2xl font-black text-[#053a6f] mt-4 leading-tight"></h2>
+            <div class="w-12 h-1 bg-yellow-400 my-6 rounded-full"></div>
+            <p id="viewIsi" class="text-gray-600 leading-relaxed text-[15px] whitespace-pre-line"></p>
+            <div class="h-24"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let allData = [];
+
+        // AMBIL SEMUA TANPA FILTER STATUS
+        const q = query(collection(db, "cerita"), orderBy("createdAt", "desc"));
+        
+        onSnapshot(q, (snap) => {
+            allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            console.log("Data loaded:", allData.length);
+            render(allData);
+        }, (error) => {
+            console.error("Firebase Error:", error);
+            alert("Cek Rules Firebase kamu, Bro!");
+        });
+
+        function render(data) {
+            const grid = document.getElementById('user-grid');
+            if(data.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-30 italic font-bold text-sm uppercase">Database Kosong</div>';
+                return;
+            }
+            grid.innerHTML = data.map((s, idx) => `
+                <div class="story-card shadow-lg animate-card" style="animation-delay: ${idx * 0.05}s" onclick="openReader('${s.id}')">
+                    <img src="${s.urlGambar || 'https://via.placeholder.com/600x800?text=No+Image'}" class="w-full h-full object-cover">
+                    <div class="story-overlay">
+                        <span class="text-[7px] font-black text-[#facc15] uppercase tracking-widest">${s.kategori || 'KONTEN'}</span>
+                        <h4 class="text-white font-bold text-[11px] leading-tight line-clamp-2">${s.judul || 'Tanpa Judul'}</h4>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.filterCat = (cat) => {
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.nav === cat);
+            });
+            if(cat === 'Semua') {
+                render(allData);
+            } else {
+                render(allData.filter(s => s.kategori === cat));
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openReader = (id) => {
+            const s = allData.find(x => x.id === id);
+            document.getElementById('viewImg').src = s.urlGambar || '';
+            document.getElementById('viewJudul').innerText = s.judul || 'Tanpa Judul';
+            document.getElementById('viewCat').innerText = s.kategori || 'KONTEN';
+            document.getElementById('viewIsi').innerText = s.isi || 'Tidak ada isi cerita.';
+            document.getElementById('reader').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeReader = () => {
+            document.getElementById('reader').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+    </script>
+</body>
+  </html>
+  
