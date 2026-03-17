@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sekawan - Jelajah Cerita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        
+        /* Glassmorphism Header */
+        .header-bg {
+            background: #053a6f;
+            background-image: linear-gradient(135deg, #053a6f 0%, #0a4d8f 100%);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        }
+
+        /* Horizontal Category Scroll */
+        .nav-scroller::-webkit-scrollbar { display: none; }
+        .nav-scroller { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .tab-btn { transition: 0.3s; white-space: nowrap; border-radius: 15px; font-weight: 800; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+        .tab-btn.active { background: #facc15; color: #053a6f; box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3); }
+
+        /* Story Card 3:4 */
+        .story-card { 
+            aspect-ratio: 3/4; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            position: relative;
+            background: #e2e8f0;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+        .story-overlay { 
+            position: absolute; inset: 0; 
+            background: linear-gradient(0deg, rgba(5, 58, 111, 0.9) 0%, rgba(5, 58, 111, 0.4) 50%, transparent 100%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 15px;
+        }
+
+        /* Reading Sheet */
+        #reader { 
+            position: fixed; inset: 0; background: white; z-index: 100; 
+            display: none; overflow-y: auto; 
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-bg pt-10 pb-8 px-6 shadow-xl">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-xl font-black text-white italic tracking-tighter">SEKAWAN<span class="text-[#facc15]">PRO</span></h1>
+                <p class="text-[9px] text-blue-200 font-bold uppercase tracking-[3px]">Digital Library</p>
+            </div>
+            <a href="admin.html" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white">
+                <i class="fa-solid fa-user-shield"></i>
+            </a>
+        </div>
+
+        <div class="nav-scroller flex overflow-x-auto gap-3 py-2" id="categoryTabs">
+            <button onclick="filterContent('Semua')" class="tab-btn active px-6 py-2.5 bg-[#facc15] text-[#053a6f]">Semua</button>
+            <button onclick="filterContent('Suami')" class="tab-btn px-6 py-2.5 bg-white/10 text-white">Suami</button>
+            <button onclick="filterContent('Mertua')" class="tab-btn px-6 py-2.5 bg-white/10 text-white">Mertua</button>
+            <button onclick="filterContent('3S')" class="tab-btn px-6 py-2.5 bg-white/10 text-white">3S</button>
+            <button onclick="filterContent('Teman')" class="tab-btn px-6 py-2.5 bg-white/10 text-white">Teman</button>
+            <button onclick="filterContent('Party')" class="tab-btn px-6 py-2.5 bg-white/10 text-white">Party</button>
+        </div>
+    </header>
+
+    <main class="px-5 py-8">
+        <div class="grid grid-cols-2 gap-4" id="mainGrid">
+            <div class="story-card animate-pulse bg-gray-200"></div>
+            <div class="story-card animate-pulse bg-gray-200"></div>
+        </div>
+    </main>
+
+    <div id="reader">
+        <div class="relative w-full h-[55vh]">
+            <img id="viewImg" class="w-full h-full object-cover" src="">
+            <button onclick="closeReader()" class="absolute top-6 left-6 w-10 h-10 bg-black/20 backdrop-blur-lg text-white rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+        <div class="bg-white rounded-t-[40px] -mt-10 relative z-10 p-8 min-height-screen">
+            <div id="viewCat" class="inline-block px-3 py-1 rounded-full bg-blue-50 text-[#053a6f] text-[9px] font-black uppercase tracking-widest mb-4"></div>
+            <h2 id="viewJudul" class="text-2xl font-black text-[#053a6f] leading-tight mb-6"></h2>
+            <div class="flex items-center gap-2 mb-8 opacity-40">
+                <div class="w-8 h-[2px] bg-gray-300"></div>
+                <p class="text-[10px] font-bold uppercase tracking-widest">Story Timeline</p>
+            </div>
+            <p id="viewIsi" class="text-gray-600 leading-relaxed text-[15px] whitespace-pre-line pb-20"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let currentData = [];
+
+        // Ambil data yang 'published' saja
+        const q = query(collection(db, "cerita"), orderBy("createdAt", "desc"));
+
+        onSnapshot(q, (snapshot) => {
+            // Filter di sisi Client agar tidak perlu ribet setting Index di Firebase Console
+            currentData = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .filter(item => item.status === 'published');
+            
+            renderGrid(currentData);
+        });
+
+        function renderGrid(data) {
+            const grid = document.getElementById('mainGrid');
+            if(data.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 text-center py-20 opacity-30 font-bold italic">Belum ada cerita...</div>';
+                return;
+            }
+
+            grid.innerHTML = data.map(item => `
+                <div class="story-card shadow-lg animate-fadeIn" onclick="openReader('${item.id}')">
+                    <img src="${item.urlGambar}" class="w-full h-full object-cover">
+                    <div class="story-overlay">
+                        <span class="text-[8px] font-black text-[#facc15] uppercase mb-1 tracking-tighter">${item.kategori}</span>
+                        <h3 class="text-white text-xs font-bold leading-tight line-clamp-2">${item.judul}</h3>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.filterContent = (cat) => {
+            // UI Update Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-[#facc15]', 'text-[#053a6f]');
+                btn.classList.add('bg-white/10', 'text-white');
+                if(btn.innerText.toLowerCase() === cat.toLowerCase()) {
+                    btn.classList.add('active', 'bg-[#facc15]', 'text-[#053a6f]');
+                    btn.classList.remove('bg-white/10', 'text-white');
+                }
+            });
+
+            if(cat === 'Semua') {
+                renderGrid(currentData);
+            } else {
+                const filtered = currentData.filter(i => i.kategori === cat);
+                renderGrid(filtered);
+            }
+        };
+
+        window.openReader = (id) => {
+            const story = currentData.find(s => s.id === id);
+            if(!story) return;
+
+            document.getElementById('viewImg').src = story.urlGambar;
+            document.getElementById('viewJudul').innerText = story.judul;
+            document.getElementById('viewCat').innerText = story.kategori;
+            document.getElementById('viewIsi').innerText = story.isi;
+            
+            document.getElementById('reader').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Lock scroll body
+        };
+
+        window.closeReader = () => {
+            document.getElementById('reader').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+    </script>
+</body>
+</html>
