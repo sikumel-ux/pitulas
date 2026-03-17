@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flyntasify - Reader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="fantasi.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; display: none; background-color: #f8fafc; }
+        
+        /* HEADER IMAGE CURVE */
+        .header-image {
+            background-image: url('20260308_194220.jpg');
+            background-size: cover; background-position: center;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            min-height: 180px; position: relative;
+        }
+        .header-image::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(5, 58, 111, 0.3) 0%, rgba(5, 58, 111, 0.8) 100%);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        }
+
+        /* GRID KATEGORI ATAS */
+        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+        .cat-icon {
+            width: 42px; height: 42px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            background: #f1f5f9; color: #64748b; font-size: 16px; transition: 0.3s;
+        }
+        .cat-item.active .cat-icon { background: #053a6f; color: white; transform: scale(1.1); }
+        .cat-item span { font-size: 9px; font-weight: 800; color: #475569; text-transform: uppercase; }
+
+        /* STORY CARD */
+        .story-card { 
+            background: white; border-radius: 25px; overflow: hidden; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: 0.3s;
+        }
+        .story-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+
+        /* NAVIGASI BAWAH - Z-INDEX TERTINGGI (999) */
+        .fixed-nav-container { position: fixed; bottom: 24px; left: 24px; right: 24px; z-index: 999; }
+        .nav-custom {
+            background: #053a6f; border-radius: 25px; padding: 12px;
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 20px 40px rgba(5, 58, 111, 0.4);
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: white; opacity: 0.5; transition: 0.3s; }
+        .nav-btn.active { opacity: 1; color: #facc15; }
+        .nav-btn i { font-size: 18px; margin-bottom: 3px; }
+        .nav-btn span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
+
+        /* MODAL READER - Z-INDEX DI BAWAH NAVIGASI (900) */
+        #reader { position: fixed; inset: 0; background: white; z-index: 900; display: none; overflow-y: auto; }
+        .reader-body { padding-bottom: 150px; } /* Jarak agar teks tidak tertutup nav */
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-up { animation: fadeInUp 0.4s ease forwards; }
+    </style>
+</head>
+<body class="pb-36">
+
+    <header class="header-image px-8 flex flex-col justify-center">
+        <div class="relative z-10 w-full pt-4">
+            <h1 class="text-4xl font-black text-white" id="clock">00:00</h1>
+            <h2 class="text-xl font-extrabold text-white mt-1 italic">Flyntasify <span class="text-[#facc15] text-[10px] not-italic tracking-widest">PRO</span></h2>
+        </div>
+    </header>
+
+    <div class="px-6 -mt-8 relative z-20">
+        <div class="bg-white/95 backdrop-blur-md rounded-[30px] p-6 shadow-xl border border-white/20">
+            <div class="cat-grid">
+                <div class="cat-item active" onclick="filterCategory('Semua', this)"><div class="cat-icon"><i class="fa-solid fa-house"></i></div><span>Semua</span></div>
+                <div class="cat-item" onclick="filterCategory('Suami', this)"><div class="cat-icon"><i class="fa-solid fa-heart"></i></div><span>Suami</span></div>
+                <div class="cat-item" onclick="filterCategory('Mertua', this)"><div class="cat-icon"><i class="fa-solid fa-heart-pulse"></i></div><span>Mertua</span></div>
+                <div class="cat-item" onclick="filterCategory('3S', this)"><div class="cat-icon"><i class="fa-solid fa-users"></i></div><span>3S</span></div>
+                <div class="cat-item" onclick="filterCategory('Teman', this)"><div class="cat-icon"><i class="fa-solid fa-face-grin-hearts"></i></div><span>Teman</span></div>
+                <div class="cat-item" onclick="filterCategory('Party', this)"><div class="cat-icon"><i class="fa-solid fa-couch"></i></div><span>Party</span></div>
+                <div class="cat-item" onclick="filterCategory('Video', this)"><div class="cat-icon"><i class="fa-brands fa-twitter"></i></div><span>Video</span></div>
+                <a href="admin.html" class="cat-item"><div class="cat-icon bg-yellow-50 text-yellow-600"><i class="fa-solid fa-gear"></i></div><span>Admin</span></a>
+            </div>
+        </div>
+    </div>
+
+    <main class="px-6 mt-8 space-y-6" id="content-list">
+        <div id="loading" class="flex justify-center py-20">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#053a6f]"></div>
+        </div>
+    </main>
+
+    <div class="fixed-nav-container">
+        <nav class="nav-custom">
+            <div class="nav-btn active" onclick="filterCategory('Semua', this)"><i class="fa-solid fa-home"></i><span>Home</span></div>
+            <div class="nav-btn" onclick="filterCategory('Mertua', this)"><i class="fa-solid fa-heart-pulse"></i><span>Mertua</span></div>
+            <div class="nav-btn" onclick="filterCategory('3S', this)"><i class="fa-solid fa-users"></i><span>3S</span></div>
+            <div class="nav-btn" onclick="filterCategory('Party', this)"><i class="fa-solid fa-couch"></i><span>Party</span></div>
+            <div class="nav-btn text-red-400" id="btnBottomLogout"><i class="fa-solid fa-power-off"></i><span>Logout</span></div>
+        </nav>
+    </div>
+
+    <div id="reader">
+        <div class="relative w-full h-[45vh]">
+            <img id="viewImg" class="w-full h-full object-cover">
+            <button onclick="closeReader()" class="absolute top-6 left-6 w-10 h-10 bg-black/40 text-white rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="p-8 -mt-10 bg-white rounded-t-[40px] relative z-10 min-h-screen reader-body">
+            <div id="viewCat" class="text-[#053a6f] font-black text-[9px] uppercase tracking-[3px] mb-2 text-center opacity-50"></div>
+            <h2 id="viewJudul" class="text-2xl font-black text-[#053a6f] leading-tight text-center"></h2>
+            <div class="w-16 h-1 bg-yellow-400 mx-auto my-6 rounded-full"></div>
+            <p id="viewIsi" class="text-gray-600 leading-relaxed text-justify whitespace-pre-line text-[15px] italic"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let stories = [];
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = "login.html"; } 
+            else { document.body.style.display = "block"; }
+        });
+
+        const q = query(collection(db, "cerita"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snap) => {
+            stories = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderContent(stories);
+        });
+
+        function renderContent(data) {
+            const list = document.getElementById('content-list');
+            if(data.length === 0) {
+                list.innerHTML = '<p class="text-center py-20 opacity-20 font-bold uppercase tracking-widest text-xs">Kosong</p>';
+                return;
+            }
+            list.innerHTML = data.map(s => `
+                <div class="story-card animate-up" onclick="openReader('${s.id}')">
+                    <img src="${s.urlGambar || 'https://via.placeholder.com/800x450'}" class="story-img">
+                    <div class="p-5">
+                        <span class="text-[8px] font-black text-[#053a6f] bg-blue-50 px-2 py-0.5 rounded-md uppercase tracking-wider">${s.kategori}</span>
+                        <h3 class="font-black text-[#053a6f] text-lg mt-2 leading-tight line-clamp-2">${s.judul}</h3>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.filterCategory = (cat, el) => {
+            closeReader();
+            document.querySelectorAll('.cat-item, .nav-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            renderContent(cat === 'Semua' ? stories : stories.filter(s => s.kategori === cat));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openReader = (id) => {
+            const s = stories.find(x => x.id === id);
+            document.getElementById('viewImg').src = s.urlGambar;
+            document.getElementById('viewJudul').innerText = s.judul;
+            document.getElementById('viewCat').innerText = s.kategori;
+            document.getElementById('viewIsi').innerText = s.isi;
+            document.getElementById('reader').style.display = 'block';
+            document.getElementById('reader').scrollTo(0,0);
+        };
+
+        window.closeReader = () => {
+            document.getElementById('reader').style.display = 'none';
+        };
+
+        document.getElementById('btnBottomLogout').addEventListener('click', () => {
+            if(confirm('Keluar?')) signOut(auth).then(() => window.location.href = "login.html");
+        });
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('clock').textContent = 
+                `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        setInterval(updateTime, 1000); updateTime();
+    </script>
+</body>
+                                                                           </html>
+              
