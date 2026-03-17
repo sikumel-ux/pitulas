@@ -10,13 +10,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding-bottom: 120px; }
         
+        /* HEADER DENGAN GAMBAR */
         .header-top {
             background-image: url('20260308_194220.jpg');
             background-size: cover; background-position: center;
             border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
             position: relative; min-height: 180px;
-            display: flex; flex-direction: column; 
-            padding: 50px 25px 0;
+            display: flex; flex-direction: column; padding: 50px 25px 0;
         }
         .header-top::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -24,51 +24,70 @@
             border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
         }
 
-        .story-card { aspect-ratio: 3/4; border-radius: 30px; overflow: hidden; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.08); background: #fff; }
+        /* NAVIGASI CARD 2 KOLOM */
+        .nav-card {
+            background: white; border-radius: 20px; padding: 15px;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: 0.3s; border: 2px solid transparent;
+        }
+        .nav-card.active { border-color: #facc15; background: #053a6f; color: white; }
+        .nav-card i { font-size: 18px; color: #facc15; }
+        .nav-card.active i { color: white; }
+        .nav-card span { font-size: 11px; font-weight: 800; text-transform: uppercase; }
+
+        /* STORY CARD 3:4 */
+        .story-card { aspect-ratio: 3/4; border-radius: 25px; overflow: hidden; position: relative; box-shadow: 0 8px 15px rgba(0,0,0,0.1); background: #fff; }
         .story-overlay { 
             position: absolute; inset: 0; 
-            background: linear-gradient(0deg, rgba(5, 58, 111, 0.95) 0%, rgba(5, 58, 111, 0.2) 60%, transparent 100%);
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 18px;
+            background: linear-gradient(0deg, rgba(5, 58, 111, 0.9) 0%, transparent 60%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 15px;
         }
 
-        /* Navigasi Bawah dengan Tombol Logout */
+        /* BOTTOM NAV */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 15px; right: 15px;
             background: #053a6f; border-radius: 25px; display: flex; 
-            justify-content: space-around; padding: 12px 10px; z-index: 999;
-            box-shadow: 0 15px 30px rgba(5, 58, 111, 0.4);
+            justify-content: space-around; padding: 12px; z-index: 999;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: white; opacity: 0.5; transition: 0.3s; flex: 1; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: white; opacity: 0.5; flex: 1; }
         .nav-item.active { opacity: 1; color: #facc15; }
-        .nav-item i { font-size: 18px; margin-bottom: 4px; }
-        .nav-item span { font-size: 7px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        /* Khusus Logout */
-        .btn-logout { color: #ff4d4d; opacity: 0.8; }
+        .nav-item span { font-size: 7px; font-weight: 800; text-transform: uppercase; margin-top: 4px; }
 
-        #reader { position: fixed; inset: 0; background: white; z-index: 500; display: none; overflow-y: auto; }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        #reader { position: fixed; inset: 0; background: white; z-index: 1000; display: none; overflow-y: auto; }
         .animate-card { animation: fadeInUp 0.4s ease forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <header class="header-top text-white">
         <div class="relative z-10 flex justify-end items-center">
-            <h2 class="text-xl font-black uppercase tracking-tighter italic text-[#facc15]">Sekawan<span class="text-white">Pro</span></h2>
+            <h2 class="text-xl font-black italic text-[#facc15]">Sekawan<span class="text-white">Pro</span></h2>
         </div>
-        
-        <div class="relative z-10 mt-8">
-            <p class="text-[10px] font-black uppercase tracking-[4px] opacity-60">Digital Library</p>
-            <h3 class="text-lg font-extrabold leading-tight">Jelajahi Fantasi<br>Tanpa Batas.</h3>
+        <div class="relative z-10 mt-6">
+            <p class="text-[9px] font-black uppercase tracking-[3px] opacity-60">Digital Library</p>
+            <h3 class="text-lg font-extrabold leading-tight text-white">Brankas Cerita<br>Eksklusif.</h3>
         </div>
     </header>
 
-    <main class="px-5 py-8">
+    <main class="px-5">
+        <div class="grid grid-cols-2 gap-3 -mt-8 relative z-20 mb-8">
+            <div onclick="filterCat('Suami')" class="nav-card category-btn" data-cat="Suami">
+                <i class="fa-solid fa-house-user"></i><span>Suami</span>
+            </div>
+            <div onclick="filterCat('Mertua')" class="nav-card category-btn" data-cat="Mertua">
+                <i class="fa-solid fa-heart"></i><span>Mertua</span>
+            </div>
+            <div onclick="filterCat('3S')" class="nav-card category-btn" data-cat="3S">
+                <i class="fa-solid fa-fire"></i><span>3S</span>
+            </div>
+            <div onclick="filterCat('Teman')" class="nav-card category-btn" data-cat="Teman">
+                <i class="fa-solid fa-comment"></i><span>Teman</span>
+            </div>
+        </div>
+
+        <h4 id="label-status" class="text-[#053a6f] font-black text-[10px] uppercase mb-4 tracking-widest">Semua Cerita</h4>
         <div class="grid grid-cols-2 gap-4" id="user-grid">
             <div class="story-card animate-pulse bg-gray-200"></div>
             <div class="story-card animate-pulse bg-gray-200"></div>
@@ -77,26 +96,22 @@
 
     <nav class="bottom-nav">
         <button onclick="filterCat('Semua')" class="nav-item active" data-nav="Semua"><i class="fa-solid fa-ghost"></i><span>Explore</span></button>
-        <button onclick="filterCat('Suami')" class="nav-item" data-nav="Suami"><i class="fa-solid fa-house-user"></i><span>Suami</span></button>
-        <button onclick="filterCat('Mertua')" class="nav-item" data-nav="Mertua"><i class="fa-solid fa-heart"></i><span>Mertua</span></button>
-        <button onclick="filterCat('3S')" class="nav-item" data-nav="3S"><i class="fa-solid fa-fire"></i><span>3S</span></button>
-        <button onclick="filterCat('Teman')" class="nav-item" data-nav="Teman"><i class="fa-solid fa-comment"></i><span>Teman</span></button>
-        <button onclick="handleLogout()" class="nav-item btn-logout"><i class="fa-solid fa-right-from-bracket"></i><span>Out</span></button>
+        <button onclick="handleLogout()" class="nav-item text-red-400"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
     </nav>
 
     <div id="reader">
-        <div class="relative w-full h-[55vh]">
+        <div class="relative w-full h-[50vh]">
             <img id="viewImg" class="w-full h-full object-cover">
-            <button onclick="closeReader()" class="absolute top-6 left-6 w-10 h-10 bg-black/40 backdrop-blur-md text-white rounded-2xl flex items-center justify-center">
+            <button onclick="closeReader()" class="absolute top-6 left-6 w-10 h-10 bg-black/40 text-white rounded-2xl flex items-center justify-center">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
         </div>
         <div class="p-8 -mt-10 bg-white rounded-t-[40px] relative z-10 min-h-screen">
-            <span id="viewCat" class="bg-yellow-100 text-[#053a6f] px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest"></span>
-            <h2 id="viewJudul" class="text-2xl font-black text-[#053a6f] mt-4 leading-tight"></h2>
-            <div class="w-12 h-1 bg-yellow-400 my-6 rounded-full"></div>
-            <p id="viewIsi" class="text-gray-600 leading-relaxed text-[15px] whitespace-pre-line text-justify tracking-tight"></p>
-            <div class="h-40"></div>
+            <span id="viewCat" class="text-[#053a6f] font-black text-[9px] uppercase tracking-widest"></span>
+            <h2 id="viewJudul" class="text-2xl font-black text-[#053a6f] mt-2 leading-tight"></h2>
+            <div class="w-12 h-1 bg-yellow-400 my-5 rounded-full"></div>
+            <p id="viewIsi" class="text-gray-600 leading-relaxed text-justify whitespace-pre-line"></p>
+            <div class="h-32"></div>
         </div>
     </div>
 
@@ -117,25 +132,20 @@
         const db = getFirestore(app);
         let allData = [];
 
-        const q = query(collection(db, "cerita"), orderBy("createdAt", "desc"));
-        
-        onSnapshot(q, (snap) => {
+        onSnapshot(query(collection(db, "cerita"), orderBy("createdAt", "desc")), (snap) => {
             allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             render(allData);
         });
 
         function render(data) {
             const grid = document.getElementById('user-grid');
-            if(data.length === 0) {
-                grid.innerHTML = '<div class="col-span-2 py-20 text-center opacity-30 italic font-bold">BELUM ADA KONTEN</div>';
-                return;
-            }
-            grid.innerHTML = data.map((s, idx) => `
-                <div class="story-card animate-card" style="animation-delay: ${idx * 0.05}s" onclick="openReader('${s.id}')">
-                    <img src="${s.urlGambar || 'https://via.placeholder.com/600x800'}" class="w-full h-full object-cover">
+            grid.innerHTML = data.length === 0 ? '<p class="col-span-2 text-center py-10 opacity-30">Kosong</p>' : 
+            data.map(s => `
+                <div class="story-card animate-card" onclick="openReader('${s.id}')">
+                    <img src="${s.urlGambar || ''}" class="w-full h-full object-cover">
                     <div class="story-overlay">
-                        <span class="text-[7px] font-black text-[#facc15] uppercase tracking-widest">${s.kategori || 'STORY'}</span>
-                        <h4 class="text-white font-bold text-[11px] leading-tight line-clamp-2">${s.judul || 'Tanpa Judul'}</h4>
+                        <span class="text-[7px] font-black text-[#facc15] uppercase tracking-widest">${s.kategori}</span>
+                        <h4 class="text-white font-bold text-[10px] line-clamp-2">${s.judul}</h4>
                     </div>
                 </div>
             `).join('');
@@ -143,39 +153,30 @@
 
         window.filterCat = (cat) => {
             closeReader();
-            document.querySelectorAll('.nav-item').forEach(btn => {
-                if(!btn.classList.contains('btn-logout')) {
-                    btn.classList.toggle('active', btn.dataset.nav === cat);
-                }
+            // Update Card Navigation UI
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.cat === cat);
             });
-            if(cat === 'Semua') {
-                render(allData);
-            } else {
-                render(allData.filter(s => s.kategori === cat));
-            }
+            // Update Bottom Nav UI
+            document.querySelector('[data-nav="Semua"]').classList.toggle('active', cat === 'Semua');
+            
+            document.getElementById('label-status').innerText = cat === 'Semua' ? 'Semua Cerita' : 'Kategori: ' + cat;
+            render(cat === 'Semua' ? allData : allData.filter(s => s.kategori === cat));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.openReader = (id) => {
             const s = allData.find(x => x.id === id);
-            document.getElementById('viewImg').src = s.urlGambar || '';
-            document.getElementById('viewJudul').innerText = s.judul || 'Tanpa Judul';
-            document.getElementById('viewCat').innerText = s.kategori || 'STORY';
-            document.getElementById('viewIsi').innerText = s.isi || '...';
+            document.getElementById('viewImg').src = s.urlGambar;
+            document.getElementById('viewJudul').innerText = s.judul;
+            document.getElementById('viewCat').innerText = s.kategori;
+            document.getElementById('viewIsi').innerText = s.isi;
             document.getElementById('reader').style.display = 'block';
             document.getElementById('reader').scrollTo(0,0);
         };
 
-        window.closeReader = () => {
-            document.getElementById('reader').style.display = 'none';
-        };
-
-        window.handleLogout = () => {
-            if(confirm('Yakin ingin keluar?')) {
-                // Tambahkan logika hapus session/login di sini jika ada
-                window.location.href = 'login.html'; 
-            }
-        };
+        window.closeReader = () => document.getElementById('reader').style.display = 'none';
+        window.handleLogout = () => confirm('Keluar?') && (window.location.href = 'login.html');
     </script>
 </body>
 </html>
