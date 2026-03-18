@@ -24,23 +24,27 @@
             border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
         }
 
-        /* Navigasi Atas 2 Kolom */
         .top-cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: -20px; position: relative; z-index: 20; padding: 0 20px; }
         .top-cat-item { 
             background: white; padding: 14px; border-radius: 18px; text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer;
         }
         .top-cat-item.active { background: #facc15; color: #053a6f; font-weight: 800; }
-        .top-cat-item span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .top-cat-item span { font-size: 11px; font-weight: 700; text-transform: uppercase; }
 
-        /* Card 1 Baris Tanpa Gambar */
+        /* Card List Style dengan Thumbnail di Kiri */
         .story-card { 
-            background: white; border-radius: 20px; padding: 20px; 
-            margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            border-left: 5px solid #053a6f; cursor: pointer;
-            transition: 0.2s;
+            background: white; border-radius: 20px; padding: 12px; 
+            margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            display: flex; align-items: center; gap: 15px; cursor: pointer;
+            transition: 0.2s; border: 1px solid #f1f5f9;
         }
-        .story-card:active { transform: scale(0.98); background: #f1f5f9; }
+        .story-card:active { transform: scale(0.97); background: #f1f5f9; }
+        
+        .thumb-img {
+            width: 80px; height: 80px; border-radius: 15px; 
+            object-cover: cover; flex-shrink: 0; background: #e2e8f0;
+        }
 
         .bottom-nav {
             position: fixed; bottom: 20px; left: 20px; right: 20px;
@@ -55,11 +59,11 @@
 
         #reader { position: fixed; inset: 0; background: white; z-index: 1500; display: none; overflow-y: auto; }
         
-        .animate-up { animation: fadeInUp 0.3s ease forwards; }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .animate-up { animation: fadeInUp 0.3s ease forwards; }
     </style>
 </head>
 <body>
@@ -81,10 +85,10 @@
 
     <main class="px-5 py-8" id="main-content">
         <div id="user-grid" class="flex flex-col">
-            <div class="h-20 bg-gray-100 rounded-2xl mb-4 animate-pulse"></div>
-            <div class="h-20 bg-gray-100 rounded-2xl mb-4 animate-pulse"></div>
+            <div class="h-24 bg-gray-100 rounded-2xl mb-4 animate-pulse"></div>
+            <div class="h-24 bg-gray-100 rounded-2xl mb-4 animate-pulse"></div>
         </div>
-        <button id="loadMoreBtn" onclick="loadMore()" class="hidden mx-auto my-4 bg-gray-200 text-[#053a6f] px-6 py-3 rounded-xl text-[10px] font-bold uppercase">Lainnya</button>
+        <button id="loadMoreBtn" onclick="loadMore()" class="hidden mx-auto my-4 bg-white border border-gray-200 text-[#053a6f] px-6 py-3 rounded-xl text-[10px] font-bold uppercase">Muat Lainnya</button>
     </main>
 
     <nav class="bottom-nav">
@@ -96,12 +100,12 @@
 
     <div id="reader">
         <div class="relative w-full h-[45vh]">
-            <img id="viewImg" class="w-full h-full object-cover bg-gray-200">
+            <img id="viewImg" class="w-full h-full object-cover">
             <button onclick="closeReader()" class="absolute top-6 left-6 w-10 h-10 bg-black/40 backdrop-blur-md text-white rounded-full flex items-center justify-center">
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
         </div>
-        <div class="p-8 -mt-10 bg-white rounded-t-[40px] relative z-10 min-h-screen">
+        <div class="p-8 -mt-10 bg-white rounded-t-[40px] relative z-10 min-h-screen shadow-2xl">
             <div id="viewCat" class="inline-block bg-blue-50 text-[#053a6f] px-3 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-widest mb-4"></div>
             <h2 id="viewJudul" class="text-2xl font-black text-slate-800 leading-tight"></h2>
             <hr class="my-6 border-gray-100">
@@ -145,16 +149,24 @@
         function render(data) {
             const grid = document.getElementById('user-grid');
             if(data.length === 0) {
-                grid.innerHTML = '<div class="py-20 text-center opacity-30 font-bold text-[11px] uppercase tracking-widest">Konten belum tersedia</div>';
+                grid.innerHTML = '<div class="py-20 text-center opacity-30 font-bold text-[11px] uppercase tracking-widest">Belum ada konten</div>';
                 return;
             }
-            grid.innerHTML = data.map((s, idx) => `
+            grid.innerHTML = data.map((s, idx) => {
+                // Cuplikan teks (isi) maksimal 60 karakter agar tidak berantakan
+                const snippet = s.isi ? s.isi.substring(0, 60) + '...' : 'Klik untuk membaca...';
+                
+                return `
                 <div class="story-card animate-up" style="animation-delay: ${idx * 0.03}s" onclick="openReader('${s.id}')">
-                    <span class="text-[9px] font-black text-[#053a6f]/40 uppercase tracking-tighter">${s.kategori || 'STORY'}</span>
-                    <h4 class="text-slate-800 font-extrabold text-[15px] leading-snug mt-1">${s.judul || 'Tanpa Judul'}</h4>
-                    <p class="text-[10px] text-slate-400 mt-2 italic">Klik untuk membaca selengkapnya...</p>
+                    <img src="${s.urlGambar || 'https://via.placeholder.com/150'}" class="thumb-img">
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[8px] font-black text-[#053a6f]/50 uppercase tracking-widest">${s.kategori || 'STORY'}</span>
+                        <h4 class="text-slate-800 font-extrabold text-[14px] leading-tight mt-0.5 truncate">${s.judul || 'Tanpa Judul'}</h4>
+                        <p class="text-[10px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">${snippet}</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-300 text-[10px] pr-2"></i>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         window.loadMore = () => { displayLimit += 15; processDisplay(); };
@@ -172,8 +184,7 @@
         window.openReader = (id) => {
             const s = allData.find(x => x.id === id);
             if(!s) return;
-            // Gambar baru dimuat saat ini
-            document.getElementById('viewImg').src = s.urlGambar || 'https://via.placeholder.com/800x600?text=No+Image';
+            document.getElementById('viewImg').src = s.urlGambar || '';
             document.getElementById('viewJudul').innerText = s.judul || 'Tanpa Judul';
             document.getElementById('viewCat').innerText = s.kategori || 'STORY';
             document.getElementById('viewIsi').innerText = s.isi || '';
