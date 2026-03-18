@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flyntasify - iOS Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700;900&display=swap');
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f2f2f7; /* iOS Secondary System Background */
+            color: #1c1c1e;
+            display: none;
+        }
+
+        /* iOS Blur Effect Header */
+        .ios-header {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 0.5px solid rgba(0,0,0,0.1);
+            padding: 20px 20px 10px;
+        }
+
+        /* Category Card 2 Kolom - iOS Style */
+        .cat-card-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            padding: 15px 20px;
+        }
+        .cat-card {
+            background: white; border-radius: 16px; padding: 16px;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s active;
+        }
+        .cat-card:active { transform: scale(0.96); background: #e5e5ea; }
+        .cat-card i { font-size: 20px; color: #007aff; } /* iOS Blue */
+        .cat-card span { font-weight: 600; font-size: 14px; color: #1c1c1e; }
+
+        /* Story Card iOS - Borderless & Large Image */
+        .story-card-ios {
+            background: white; border-radius: 20px; margin: 0 20px 25px;
+            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+        .story-card-ios img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+        .story-info { padding: 18px; }
+        .story-tag { font-size: 10px; font-weight: 800; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Floating iOS Tab Bar */
+        .tab-bar-container {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px; z-index: 1000;
+        }
+        .tab-bar {
+            background: rgba(28, 28, 30, 0.9); /* Dark iOS Style */
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px; padding: 10px 20px;
+            display: flex; justify-content: space-around; align-items: center;
+        }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: #8e8e93; font-size: 10px; gap: 4px; }
+        .tab-item.active { color: #ffffff; }
+        .tab-item i { font-size: 22px; }
+
+        /* iOS Reader Modal */
+        #reader { 
+            position: fixed; inset: 0; background: white; z-index: 1100; 
+            display: none; overflow-y: auto; 
+        }
+        .reader-header {
+            position: sticky; top: 0; background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px); padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 0.5px solid #e5e5ea;
+        }
+
+        /* Animasi Muncul Card */
+        @keyframes iosSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-ios { animation: iosSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    </style>
+</head>
+<body class="pb-32">
+
+    <header class="ios-header">
+        <div class="flex justify-between items-end">
+            <div>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest" id="ios-date">WEDNESDAY, MARCH 18</p>
+                <h1 class="text-3xl font-black tracking-tight">Untuk Kamu</h1>
+            </div>
+            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                <span id="ios-clock">09:00</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="cat-card-grid">
+        <div onclick="filterCategory('Suami', this)" class="cat-card">
+            <i class="fa-solid fa-house-chimney-window"></i><span>Suami</span>
+        </div>
+        <div onclick="filterCategory('Mertua', this)" class="cat-card">
+            <i class="fa-solid fa-hand-holding-heart"></i><span>Mertua</span>
+        </div>
+        <div onclick="filterCategory('3S', this)" class="cat-card">
+            <i class="fa-solid fa-users-viewfinder"></i><span>3S</span>
+        </div>
+        <div onclick="filterCategory('Party', this)" class="cat-card">
+            <i class="fa-solid fa-champagne-glasses"></i><span>Party</span>
+        </div>
+    </section>
+
+    <main id="content-list" class="mt-4">
+        <div class="animate-pulse px-5"><div class="h-64 bg-gray-200 rounded-3xl w-full"></div></div>
+    </main>
+
+    <div class="tab-bar-container">
+        <nav class="tab-bar">
+            <div onclick="filterCategory('Semua', this)" class="tab-item active"><i class="fa-solid fa-house-variant"></i><span>Explore</span></div>
+            <div onclick="filterCategory('Video', this)" class="tab-item"><i class="fa-solid fa-play"></i><span>Video</span></div>
+            <div onclick="filterCategory('Teman', this)" class="tab-item"><i class="fa-solid fa-comment-dots"></i><span>Chat</span></div>
+            <div id="btnLogout" class="tab-item text-red-400"><i class="fa-solid fa-door-open"></i><span>Out</span></div>
+        </nav>
+    </div>
+
+    <div id="reader">
+        <div class="reader-header">
+            <button onclick="closeReader()" class="text-blue-600 font-semibold text-lg"><i class="fa-solid fa-chevron-left mr-2"></i>Kembali</button>
+            <span class="font-bold text-sm opacity-50">Flyntasify Reader</span>
+            <div class="w-10"></div>
+        </div>
+        <div class="max-w-2xl mx-auto">
+            <img id="viewImg" class="w-full aspect-video object-cover" src="">
+            <div class="p-8">
+                <span id="viewCat" class="text-blue-600 font-bold text-xs uppercase tracking-widest"></span>
+                <h2 id="viewJudul" class="text-3xl font-black mt-2 leading-tight"></h2>
+                <hr class="my-8 opacity-10">
+                <p id="viewIsi" class="text-[18px] text-gray-800 leading-relaxed text-justify whitespace-pre-line" style="font-family: 'Georgia', serif;"></p>
+                <div class="h-40"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let stories = [];
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = "login.html";
+            else document.body.style.display = "block";
+        });
+
+        onSnapshot(query(collection(db, "cerita"), orderBy("createdAt", "desc")), (snap) => {
+            stories = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            render(stories);
+        });
+
+        function render(data) {
+            const list = document.getElementById('content-list');
+            list.innerHTML = data.map(s => `
+                <div class="story-card-ios animate-ios" onclick="openReader('${s.id}')">
+                    <img src="${s.urlGambar || ''}">
+                    <div class="story-info">
+                        <span class="story-tag">${s.kategori}</span>
+                        <h3 class="text-xl font-bold mt-1 text-gray-900">${s.judul}</h3>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.filterCategory = (cat, el) => {
+            closeReader();
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            if(el.classList.contains('tab-item')) el.classList.add('active');
+            render(cat === 'Semua' ? stories : stories.filter(s => s.kategori === cat));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openReader = (id) => {
+            const s = stories.find(x => x.id === id);
+            document.getElementById('viewImg').src = s.urlGambar;
+            document.getElementById('viewJudul').innerText = s.judul;
+            document.getElementById('viewCat').innerText = s.kategori;
+            document.getElementById('viewIsi').innerText = s.isi;
+            document.getElementById('reader').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeReader = () => {
+            document.getElementById('reader').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+
+        document.getElementById('btnLogout').onclick = () => confirm('Logout?') && signOut(auth).then(() => window.location.href = "login.html");
+
+        function updateClock() {
+            const n = new Date();
+            document.getElementById('ios-clock').innerText = `${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`;
+            const opt = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('ios-date').innerText = n.toLocaleDateString('id-ID', opt).toUpperCase();
+        }
+        setInterval(updateClock, 1000); updateClock();
+    </script>
+</body>
+          </html>
+          
