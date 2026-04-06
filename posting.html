@@ -3,112 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sekawan - Koleksi Cerita</title>
+    <title>Admin - Studio Post Fantasify</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding-bottom: 50px; }
         
-        .nav-glass {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-        }
+        .custom-input { width: 100%; padding: 18px; border-radius: 20px; background: #f8fafc; border: 1px solid #e2e8f0; font-weight: 600; outline: none; transition: 0.3s; font-size: 14px; }
+        .custom-input:focus { border-color: #053a6f; background: white; }
+        textarea.custom-input { min-height: 150px; resize: none; overflow: hidden; line-height: 1.6; }
 
-        .story-card {
-            background: white;
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
-            transition: transform 0.3s ease;
-        }
+        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.4; transition: 0.3s; }
+        .cat-item.active { opacity: 1; transform: scale(1.05); }
+        .cat-icon { width: 45px; height: 45px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #053a6f; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .cat-item.active .cat-icon { background: #053a6f; color: #facc15; }
+        .cat-item span { font-size: 8px; font-weight: 800; text-transform: uppercase; }
 
-        .img-container {
-            width: 100%;
-            aspect-ratio: 3/4; /* Konsisten Vertikal */
-            overflow: hidden;
-            position: relative;
-        }
+        /* Preview Area Fleksibel (Hapus aspect-ratio fixed) */
+        #previewContainer { display: none; width: 100%; max-width: 400px; border-radius: 25px; overflow: hidden; margin: 0 auto 20px; position: relative; border: 2px dashed #cbd5e1; background: #f8fafc; }
+        #imgPreview { width: 100%; height: auto; display: block; object-fit: contain; } /* Gunakan contain agar gambar utuh terlihat */
+        .btn-remove { position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 12px; z-index: 10; }
 
-        .img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .category-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(5, 58, 111, 0.8);
-            color: #facc15;
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            backdrop-filter: blur(4px);
-        }
-
-        /* Category Slider */
-        .cat-chip {
-            flex: 0 0 auto;
-            padding: 10px 20px;
-            border-radius: 15px;
-            background: white;
-            font-size: 12px;
-            font-weight: 700;
-            color: #64748b;
-            border: 1px solid #f1f5f9;
-            transition: 0.3s;
-        }
-        .cat-chip.active {
-            background: #053a6f;
-            color: #facc15;
-            box-shadow: 0 8px 15px rgba(5, 58, 111, 0.2);
-        }
+        .btn-action { padding: 18px; border-radius: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; width: 100%; font-size: 13px; border: none; cursor: pointer; }
+        .btn-pub { background: #053a6f; color: #facc15; box-shadow: 0 10px 20px rgba(5, 58, 111, 0.2); }
+        .btn-draft { background: #facc15; color: #053a6f; margin-top: 10px; }
+        .btn-cancel { background: #94a3b8; color: white; margin-top: 10px; display: none; }
     </style>
 </head>
-<body class="pb-24">
+<body>
 
-    <header class="sticky top-0 z-50 bg-[#f8fafc]/80 backdrop-blur-md px-6 py-4 flex justify-between items-center">
-        <div>
-            <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Selamat Datang</p>
-            <h1 class="text-xl font-extrabold text-[#053a6f]">Koleksi Sekawan</h1>
+    <header class="bg-[#053a6f] pt-10 pb-16 px-8 text-white rounded-b-[40px] mb-[-40px]">
+        <div class="flex justify-between items-center">
+            <a href="index.html" class="opacity-70"><i class="fa-solid fa-arrow-left mr-2"></i> Kembali</a>
+            <h2 id="modeTitle" class="text-lg font-black uppercase tracking-widest text-[#facc15]">Studio Post</h2>
         </div>
-        <a href="admin.html" class="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-[#053a6f]">
-            <i class="fa-solid fa-user-shield"></i>
-        </a>
     </header>
 
-    <div class="flex overflow-x-auto gap-3 px-6 py-2 no-scrollbar" id="filterContainer">
-        <button class="cat-chip active" data-filter="all">Semua</button>
-        <button class="cat-chip" data-filter="Suami">Suami</button>
-        <button class="cat-chip" data-filter="Mertua">Mertua</button>
-        <button class="cat-chip" data-filter="3S">3S</button>
-        <button class="cat-chip" data-filter="Teman">Teman</button>
-        <button class="cat-chip" data-filter="Party">Party</button>
-    </div>
+    <main class="px-6 relative z-10">
+        <div class="bg-white rounded-[35px] p-6 shadow-2xl space-y-6">
+            
+            <div>
+                <p class="text-[10px] font-black text-gray-400 uppercase mb-4 tracking-widest text-center">Pilih Kategori</p>
+                <div class="cat-grid" id="categorySelector">
+                    <div class="cat-item" data-cat="Mertua"><div class="cat-icon"><i class="fa-solid fa-heart-pulse"></i></div><span>Mertua</span></div>
+                    <div class="cat-item" data-cat="3S"><div class="cat-icon"><i class="fa-solid fa-users"></i></div><span>3S</span></div>
+                    <div class="cat-item" data-cat="Teman"><div class="cat-icon"><i class="fa-solid fa-face-smile"></i></div><span>Teman</span></div>
+                    <div class="cat-item" data-cat="Persoka"><div class="cat-icon"><i class="fa-solid fa-shield-halved"></i></div><span>Persoka</span></div>
+                    <div class="cat-item" data-cat="Party"><div class="cat-icon"><i class="fa-solid fa-couch"></i></div><span>Party</span></div>
+                    <div class="cat-item" data-cat="Video"><div class="cat-icon"><i class="fa-solid fa-video"></i></div><span>Video</span></div>
+                </div>
+            </div>
 
-    <main class="px-6 mt-6 space-y-8" id="feed-container">
-        <div class="animate-pulse space-y-4">
-            <div class="bg-gray-200 rounded-[30px] aspect-[3/4]"></div>
-            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div id="previewContainer">
+                <img id="imgPreview" src="">
+                <button type="button" class="btn-remove" id="btnRemoveImg"><i class="fa-solid fa-times"></i></button>
+            </div>
+
+            <div id="uploadPlaceholder" class="w-full p-10 border-2 border-dashed border-gray-200 rounded-[30px] text-center cursor-pointer hover:bg-gray-50" onclick="document.getElementById('fileInput').click()">
+                <i class="fa-solid fa-image text-gray-300 text-4xl mb-3"></i>
+                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Klik Upload Foto (Bebas)</p>
+                <input type="file" id="fileInput" accept="image/*" class="hidden">
+            </div>
+
+            <input type="text" id="judul" class="custom-input" placeholder="Judul Fantasi">
+            <textarea id="isi" class="custom-input" placeholder="Tulis alur cerita lengkap di sini..." oninput="autoResize(this)"></textarea>
+
+            <div class="pt-4">
+                <button id="btnPublish" class="btn-action btn-pub">🚀 Terbitkan Sekarang</button>
+                <button id="btnSaveDraft" class="btn-action btn-draft">📂 Simpan ke Draft</button>
+                <button id="btnCancel" class="btn-action btn-cancel" onclick="resetForm()">❌ Batalkan Edit</button>
+            </div>
         </div>
+
+        <h3 class="text-[#053a6f] font-black uppercase text-xs mt-10 mb-4 ml-2 italic opacity-50 text-center">Aktivitas Terbaru</h3>
+        <div id="admin-list" class="space-y-3 pb-10"></div>
     </main>
 
-    <nav class="fixed bottom-6 left-6 right-6 h-16 nav-glass rounded-3xl flex items-center justify-around px-4 z-50 shadow-xl">
-        <button class="text-[#053a6f] text-xl"><i class="fa-solid fa-house-chimney"></i></button>
-        <button class="text-gray-400 text-xl"><i class="fa-solid fa-magnifying-glass"></i></button>
-        <button class="text-gray-400 text-xl"><i class="fa-solid fa-heart"></i></button>
-        <button class="text-gray-400 text-xl"><i class="fa-solid fa-bookmark"></i></button>
-    </nav>
+    <script>
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-        import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
@@ -121,71 +103,182 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        let currentFilter = "all";
+        
+        let selectedCat = "";
+        let base64Image = "";
+        let currentEditId = null;
 
-        // Ambil data (Hanya yang statusnya 'published')
-        const q = query(
-            collection(db, "cerita"), 
-            where("status", "==", "published"),
-            orderBy("createdAt", "desc")
-        );
+        const fileInput = document.getElementById('fileInput');
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    // LOGIKA BARU: Fleksibel, Tanpa Cropping
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Tentukan batas maksimum (lebar atau tinggi) agar file tidak meledak ukurannya
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+                    let width = img.width;
+                    let height = img.height;
 
-        onSnapshot(q, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderFeed(data);
-        });
+                    // Hitung rasio untuk resize proporsional (bukan crop)
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
 
-        function renderFeed(items) {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '';
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Gambar ulang seluruh imej ke canvas (proporsional)
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Simpan sebagai Base64
+                    base64Image = canvas.toDataURL('image/jpeg', 0.7); // Kualitas 0.7 biar hemat storage
+                    
+                    document.getElementById('imgPreview').src = base64Image;
+                    document.getElementById('previewContainer').style.display = 'block';
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                };
+            };
+        };
 
-            const filtered = currentFilter === "all" 
-                ? items 
-                : items.filter(i => i.kategori === currentFilter);
+        document.getElementById('btnRemoveImg').onclick = () => {
+            base64Image = "";
+            fileInput.value = "";
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('uploadPlaceholder').style.display = 'block';
+        };
 
-            if(filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-20">
-                        <i class="fa-solid fa-box-open text-4xl text-gray-200 mb-4"></i>
-                        <p class="text-gray-400 font-bold">Belum ada cerita di kategori ini.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            filtered.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'story-card';
-                card.innerHTML = `
-                    <div class="img-container">
-                        <span class="category-badge">${item.kategori}</span>
-                        <img src="${item.urlGambar || 'https://via.placeholder.com/600x800'}" alt="${item.judul}">
-                    </div>
-                    <div class="p-6">
-                        <h2 class="text-lg font-extrabold text-[#053a6f] leading-tight mb-2">${item.judul}</h2>
-                        <p class="text-gray-500 text-sm line-clamp-3 mb-4">${item.isi}</p>
-                        <div class="flex justify-between items-center border-t pt-4 border-gray-50">
-                            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">
-                                <i class="fa-regular fa-clock mr-1"></i> ${new Date(item.createdAt?.toDate()).toLocaleDateString('id-ID')}
-                            </span>
-                            <button class="text-[#053a6f] font-black text-xs uppercase tracking-widest">Baca Cerita <i class="fa-solid fa-chevron-right ml-1"></i></button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Logic Filter Klik
-        document.querySelectorAll('.cat-chip').forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                // Re-render data yang sudah ada di memory
-                location.reload(); // Simple way to re-trigger onSnapshot or just filter current array
+        document.querySelectorAll('.cat-item').forEach(item => {
+            item.onclick = () => {
+                document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                selectedCat = item.dataset.cat;
             };
         });
+
+        async function saveData(status) {
+            const judul = document.getElementById('judul').value;
+            const isi = document.getElementById('isi').value;
+            const btn = status === 'published' ? document.getElementById('btnPublish') : document.getElementById('btnSaveDraft');
+
+            if(!selectedCat || !judul || !isi) return alert("Lengkapi data dulu bos!");
+
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+
+            try {
+                const data = {
+                    judul, kategori: selectedCat, isi, urlGambar: base64Image,
+                    status: status, updatedAt: serverTimestamp()
+                };
+
+                if (currentEditId) {
+                    await updateDoc(doc(db, "cerita", currentEditId), data);
+                    alert("Berhasil diupdate!");
+                } else {
+                    data.createdAt = serverTimestamp();
+                    await addDoc(collection(db, "cerita"), data);
+                    alert(status === 'published' ? "Sudah Terbit!" : "Masuk Draft!");
+                }
+                resetForm();
+            } catch (e) { alert(e.message); btn.disabled = false; }
+        }
+
+        window.resetForm = () => {
+            currentEditId = null;
+            selectedCat = "";
+            base64Image = "";
+            document.getElementById('judul').value = "";
+            document.getElementById('isi').value = "";
+            document.getElementById('isi').style.height = 'auto';
+            document.getElementById('imgPreview').src = "";
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('uploadPlaceholder').style.display = 'block';
+            document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('btnCancel').style.display = 'none';
+            document.getElementById('modeTitle').innerText = "Studio Post";
+            document.getElementById('btnPublish').innerText = "🚀 Terbitkan Sekarang";
+            document.getElementById('btnSaveDraft').innerText = "📂 Simpan ke Draft";
+            document.getElementById('btnPublish').disabled = false;
+            document.getElementById('btnSaveDraft').disabled = false;
+        };
+
+        document.getElementById('btnPublish').onclick = () => saveData('published');
+        document.getElementById('btnSaveDraft').onclick = () => saveData('draft');
+
+        onSnapshot(query(collection(db, "cerita"), orderBy("createdAt", "desc")), (snap) => {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = '';
+            snap.docs.slice(0, 10).forEach(d => {
+                const item = d.data();
+                const badge = item.status === 'draft' ? 'bg-yellow-100 text-yellow-600' : 'bg-green-100 text-green-600';
+                list.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-transparent hover:border-[#053a6f] transition cursor-pointer" onclick="editPost('${d.id}')">
+                        <div>
+                            <p class="text-[7px] font-black uppercase text-gray-400 mb-1">${item.kategori} • <span class="${badge} px-2 rounded">${item.status || 'published'}</span></p>
+                            <h4 class="text-xs font-bold text-gray-700">${item.judul}</h4>
+                        </div>
+                        <div class="flex gap-4">
+                            <i class="fa-solid fa-pen-to-square text-blue-300"></i>
+                            <button onclick="event.stopPropagation(); deletePost('${d.id}')" class="text-red-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>`;
+            });
+        });
+
+        window.editPost = async (id) => {
+            const docRef = doc(db, "cerita", id);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                currentEditId = id;
+                document.getElementById('judul').value = data.judul;
+                document.getElementById('isi').value = data.isi;
+                autoResize(document.getElementById('isi'));
+                selectedCat = data.kategori;
+                document.querySelectorAll('.cat-item').forEach(i => {
+                    i.classList.toggle('active', i.dataset.cat === selectedCat);
+                });
+                if (data.urlGambar) {
+                    base64Image = data.urlGambar;
+                    document.getElementById('imgPreview').src = base64Image;
+                    document.getElementById('previewContainer').style.display = 'block';
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                } else {
+                    document.getElementById('previewContainer').style.display = 'none';
+                    document.getElementById('uploadPlaceholder').style.display = 'block';
+                }
+                document.getElementById('modeTitle').innerText = "Edit Mode";
+                document.getElementById('btnPublish').innerText = "✅ Update & Terbitkan";
+                document.getElementById('btnSaveDraft').innerText = "💾 Update ke Draft";
+                document.getElementById('btnCancel').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        window.deletePost = async (id) => {
+            if(confirm("Yakin hapus?")) {
+                await deleteDoc(doc(db, "cerita", id));
+                if(currentEditId === id) resetForm();
+            }
+        };
     </script>
 </body>
 </html>
