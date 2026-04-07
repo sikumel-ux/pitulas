@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; padding-bottom: 120px; overflow-x: hidden; }
+        
+        /* HEADER */
+        .header-top {
+            background-image: url('20260308_194220.jpg');
+            background-size: cover; background-position: center;
+            min-height: 220px; position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding-bottom: 80px;
+        }
+        .header-top::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(5, 58, 111, 0.3) 0%, rgba(5, 58, 111, 0.8) 100%);
+        }
+
+        .brand-title {
+            position: relative; z-index: 30;
+            font-size: 32px; font-weight: 900; font-style: italic;
+            color: #facc15; letter-spacing: -1px; margin-bottom: 15px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* TOP NAVIGATION */
+        .top-nav-box {
+            background: white; border-radius: 40px;
+            margin: -65px 20px 0 20px; position: relative; z-index: 20;
+            padding: 25px 15px; display: grid;
+            grid-template-columns: repeat(4, 1fr); gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .top-nav-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
+        .top-nav-icon { 
+            width: 48px; height: 48px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            background: #f1f5f9; color: #94a3b8; transition: 0.3s;
+        }
+        .top-nav-item.active .top-nav-icon { background: #053a6f; color: #facc15; }
+        .top-nav-item span { font-size: 8px; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
+        .top-nav-item.active span { color: #053a6f; }
+
+        /* STORY CARDS */
+        .story-card { 
+            background: white; border-radius: 40px; padding: 15px; 
+            margin: 15px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex; align-items: center; gap: 15px; cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .story-card:active { transform: scale(0.98); }
+        .thumb-box {
+            width: 85px; height: 85px; border-radius: 25px; 
+            overflow: hidden; flex-shrink: 0; background: #e2e8f0;
+        }
+        .thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            background: #053a6f; border-radius: 35px; display: flex; 
+            justify-content: space-around; padding: 15px 10px; 
+            z-index: 3000;
+        }
+        .nav-link { display: flex; flex-direction: column; align-items: center; color: white; opacity: 0.4; flex: 1; border:none; background:none; outline:none; }
+        .nav-link.active { opacity: 1; color: #facc15; }
+        .nav-link i { font-size: 20px; margin-bottom: 4px; }
+        .nav-link span { font-size: 7px; font-weight: 800; text-transform: uppercase; }
+
+        /* READER OVERLAY */
+        #reader { 
+            position: fixed; inset: 0; background: white; 
+            z-index: 2500; display: none; overflow-y: auto; 
+            padding-bottom: 120px; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-top">
+        <h1 class="brand-title">Fantasify</h1>
+    </div>
+
+    <div class="top-nav-box">
+        <div onclick="filterCat('Semua')" class="top-nav-item active" data-cat="Semua">
+            <div class="top-nav-icon"><i class="fa-solid fa-house"></i></div>
+            <span>Semua</span>
+        </div>
+        <div onclick="filterCat('Mertua')" class="top-nav-item" data-cat="Mertua">
+            <div class="top-nav-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <span>Mertua</span>
+        </div>
+        <div onclick="filterCat('3S')" class="top-nav-item" data-cat="3S">
+            <div class="top-nav-icon"><i class="fa-solid fa-users"></i></div>
+            <span>3S</span>
+        </div>
+        <div onclick="filterCat('Teman')" class="top-nav-item" data-cat="Teman">
+            <div class="top-nav-icon"><i class="fa-solid fa-face-smile"></i></div>
+            <span>Teman</span>
+        </div>
+        <div onclick="filterCat('Persoka')" class="top-nav-item" data-cat="Persoka">
+            <div class="top-nav-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <span>Persoka</span>
+        </div>
+        <div onclick="filterCat('Party')" class="top-nav-item" data-cat="Party">
+            <div class="top-nav-icon"><i class="fa-solid fa-couch"></i></div>
+            <span>Party</span>
+        </div>
+        <div onclick="filterCat('Video')" class="top-nav-item" data-cat="Video">
+            <div class="top-nav-icon"><i class="fa-solid fa-video"></i></div>
+            <span>Video</span>
+        </div>
+        <a href="admin.html" class="top-nav-item">
+            <div class="top-nav-icon text-blue-500"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <span>Upload</span>
+        </a>
+    </div>
+
+    <main id="user-grid" class="mt-8"></main>
+
+    <nav class="bottom-nav">
+        <button onclick="filterCat('Semua')" class="nav-link active" data-nav="Semua"><i class="fa-solid fa-house"></i><span>Home</span></button>
+        <button onclick="filterCat('Mertua')" class="nav-link" data-nav="Mertua"><i class="fa-solid fa-heart-pulse"></i><span>Mertua</span></button>
+        <button onclick="filterCat('Persoka')" class="nav-link" data-nav="Persoka"><i class="fa-solid fa-shield-halved"></i><span>Persoka</span></button>
+        <button onclick="window.location.href='admin.html'" class="nav-link"><i class="fa-solid fa-user-gear"></i><span>Admin</span></button>
+    </nav>
+
+    <div id="reader">
+        <div class="relative w-full h-[45vh]">
+            <img id="viewImg" class="w-full h-full object-cover">
+            <button onclick="closeReader()" class="absolute top-6 left-6 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        </div>
+        <div class="p-8 -mt-10 bg-white rounded-t-[45px] relative z-10 min-h-screen">
+            <div id="viewCat" class="bg-blue-50 text-[#053a6f] px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block"></div>
+            <h2 id="viewJudul" class="text-2xl font-black text-[#053a6f] leading-tight"></h2>
+            <div class="h-1 w-12 bg-yellow-400 my-6 rounded-full"></div>
+            <p id="viewIsi" class="text-gray-600 leading-relaxed text-[16px] whitespace-pre-line text-justify pb-10"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs", 
+            authDomain: "pitulascom.firebaseapp.com", 
+            projectId: "pitulascom", 
+            storageBucket: "pitulascom.firebasestorage.app", 
+            messagingSenderId: "57896978619", 
+            appId: "1:57896978619:web:81503dfde8d568e35d819e" 
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let allData = [];
+        let currentFilter = 'Semua';
+
+        // Ambil data real-time
+        onSnapshot(query(collection(db, "cerita"), orderBy("createdAt", "desc")), (snap) => {
+            allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            render();
+        });
+
+        function render() {
+            const grid = document.getElementById('user-grid');
+            
+            const data = allData.filter(s => {
+                // 1. Filter Berdasarkan Kategori
+                const isSelectedCat = currentFilter === 'Semua' || s.kategori === currentFilter;
+                
+                // 2. Filter Berdasarkan Status (KUNCI UTAMA):
+                // Kita tampilkan SEMUA kecuali yang statusnya eksplisit bertuliskan 'draft'
+                // Ini akan memunculkan tulisan lama (status kosong) dan tulisan baru (published)
+                const isNotDraft = s.status !== 'draft';
+                
+                return isNotDraft && isSelectedCat;
+            });
+            
+            if (data.length === 0) {
+                grid.innerHTML = `<div class="text-center py-20 text-gray-400 font-bold">Belum ada cerita di sini, bro..</div>`;
+                return;
+            }
+
+            grid.innerHTML = data.map(s => {
+                const snippet = s.isi ? s.isi.substring(0, 70) + '...' : 'Klik untuk membaca...';
+                const imgUrl = s.urlGambar || 'https://via.placeholder.com/150';
+                
+                return `
+                <div class="story-card" onclick="openReader('${s.id}')">
+                    <div class="thumb-box">
+                        <img src="${imgUrl}" loading="lazy">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">${s.kategori || 'UMUM'}</span>
+                        <h4 class="text-[#053a6f] font-black text-[16px] leading-tight mt-0.5 truncate">${s.judul || 'Tanpa Judul'}</h4>
+                        <p class="text-gray-400 text-[11px] mt-1 line-clamp-2 leading-relaxed italic">"${snippet}"</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-200 text-xs pr-2"></i>
+                </div>
+            `}).join('');
+        }
+
+        window.filterCat = (cat) => {
+            currentFilter = cat;
+            // Update UI navigasi atas
+            document.querySelectorAll('.top-nav-item').forEach(el => {
+                if(el.dataset.cat === cat) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            // Update UI navigasi bawah
+            document.querySelectorAll('.nav-link').forEach(el => {
+                if(el.dataset.nav === cat) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            
+            closeReader();
+            render();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openReader = (id) => {
+            const s = allData.find(x => x.id === id);
+            if(!s) return;
+            document.getElementById('viewImg').src = s.urlGambar || 'https://via.placeholder.com/150';
+            document.getElementById('viewJudul').innerText = s.judul || 'Tanpa Judul';
+            document.getElementById('viewCat').innerText = s.kategori || 'CERITA';
+            document.getElementById('viewIsi').innerText = s.isi || '';
+            document.getElementById('reader').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('reader').scrollTop = 0;
+        };
+
+        window.closeReader = () => { 
+            document.getElementById('reader').style.display = 'none'; 
+            document.body.style.overflow = 'auto'; 
+        };
+    </script>
+</body>
+</html>
