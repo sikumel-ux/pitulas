@@ -87,6 +87,10 @@
         <div onclick="filterCat('Persoka')" class="top-nav-item" data-cat="Persoka"><div class="top-nav-icon"><i class="fa-solid fa-shield-halved"></i></div><span>Persoka</span></div>
         <div onclick="filterCat('Party')" class="top-nav-item" data-cat="Party"><div class="top-nav-icon"><i class="fa-solid fa-couch"></i></div><span>Party</span></div>
         <div onclick="filterCat('Video')" class="top-nav-item" data-cat="Video"><div class="top-nav-icon"><i class="fa-solid fa-video"></i></div><span>Video</span></div>
+        <a href="admin.html" class="top-nav-item">
+            <div class="top-nav-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <span>Upload</span>
+        </a>
     </div>
 
     <main id="user-grid" class="mt-8"></main>
@@ -131,6 +135,7 @@
         let allData = [];
         let currentFilter = 'Semua';
 
+        // Listen data real-time
         onSnapshot(query(collection(db, "cerita"), orderBy("createdAt", "desc")), (snap) => {
             allData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             render();
@@ -140,15 +145,23 @@
             const grid = document.getElementById('user-grid');
             
             const data = allData.filter(s => {
+                // Filter Kategori
                 const isSelectedCat = currentFilter === 'Semua' || s.kategori === currentFilter;
                 
-                // LOGIKA FILTER: Muncul jika status 'published' ATAU jika data lama (status belum ada)
-                // Data 'draft' akan otomatis ter-filter (false)
-                const isPublished = s.status === 'published' || !s.status;
+                // FILTER STATUS DIPERKUAT:
+                // Tampilkan jika status adalah 'published'
+                // ATAU statusnya kosong/undefined (untuk data lama)
+                // ATAU statusnya null
+                const isPublished = s.status === 'published' || s.status === undefined || s.status === null || s.status === "";
                 
                 return isPublished && isSelectedCat;
             });
             
+            if (data.length === 0) {
+                grid.innerHTML = `<p class="text-center text-gray-400 mt-10">Belum ada cerita di kategori ini.</p>`;
+                return;
+            }
+
             grid.innerHTML = data.map(s => {
                 const snippet = s.isi ? s.isi.substring(0, 60) + '...' : 'Baca selengkapnya...';
                 return `
@@ -178,12 +191,13 @@
         window.openReader = (id) => {
             const s = allData.find(x => x.id === id);
             if(!s) return;
-            document.getElementById('viewImg').src = s.urlGambar;
-            document.getElementById('viewJudul').innerText = s.judul;
-            document.getElementById('viewCat').innerText = s.kategori;
-            document.getElementById('viewIsi').innerText = s.isi;
+            document.getElementById('viewImg').src = s.urlGambar || 'https://via.placeholder.com/150';
+            document.getElementById('viewJudul').innerText = s.judul || 'Tanpa Judul';
+            document.getElementById('viewCat').innerText = s.kategori || 'UMUM';
+            document.getElementById('viewIsi').innerText = s.isi || '';
             document.getElementById('reader').style.display = 'block';
             document.body.style.overflow = 'hidden';
+            document.getElementById('reader').scrollTop = 0;
         };
 
         window.closeReader = () => { 
@@ -192,5 +206,4 @@
         };
     </script>
 </body>
-                </html>
-    
+</html>
