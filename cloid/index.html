@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cloud Storage V.02 - Fixed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; padding-bottom: 120px; }
+
+        .header-image {
+            background-image: url('20260308_194220.jpg');
+            background-size: cover; background-position: center;
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+            position: relative; min-height: 200px; display: flex; align-items: flex-end; padding-bottom: 60px;
+        }
+        .header-image::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(5, 58, 111, 0.1) 0%, rgba(5, 58, 111, 0.9) 100%);
+            border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+        }
+
+        .storage-card {
+            background: white; border-radius: 30px; padding: 24px;
+            box-shadow: 0 10px 30px rgba(5, 58, 111, 0.05);
+            border: 1px solid rgba(0,0,0,0.02); margin-bottom: 20px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #f1f5f9; background: #fafafa; border-radius: 25px;
+            padding: 40px 20px; display: flex; flex-direction: column; align-items: center; transition: 0.3s;
+            cursor: pointer;
+        }
+        .drop-zone:active { transform: scale(0.97); background: #fefce8; border-color: #facc15; }
+
+        .nav-clean {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #053a6f; border-radius: 25px; padding: 12px 40px;
+            box-shadow: 0 15px 40px rgba(5, 58, 111, 0.3); display: flex; align-items: center;
+            text-decoration: none; gap: 10px; z-index: 1000;
+        }
+        .nav-clean i { color: #facc15; font-size: 14px; }
+
+        .login-box { display: none; }
+        .gallery-content { display: none; }
+        .auth-active .login-box { display: none; }
+        .auth-active .gallery-content { display: block; }
+        .unauth .login-box { display: flex; }
+    </style>
+</head>
+<body class="unauth" id="mainBody">
+
+    <div class="login-box fixed inset-0 z-[100] bg-[#053a6f] flex flex-col items-center justify-center px-10">
+        <div class="bg-white p-8 rounded-[40px] shadow-2xl w-full max-w-sm text-center">
+            <h2 class="text-2xl font-black text-[#053a6f] mb-2 uppercase italic tracking-tighter">Brankas V.02</h2>
+            <p class="text-gray-400 text-[9px] font-bold mb-8 uppercase tracking-[0.3em]">Restricted Access</p>
+            <div class="space-y-4">
+                <input type="email" id="loginEmail" placeholder="Email" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f]">
+                <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 font-bold outline-none focus:border-[#053a6f]">
+                <button id="btnLogin" class="w-full bg-[#053a6f] text-[#facc15] py-4 rounded-2xl font-black uppercase tracking-widest">Buka</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-content">
+        <header class="header-image px-10">
+            <div class="relative z-10 w-full flex justify-between items-center">
+                <div class="text-white">
+                    <h1 class="text-2xl font-black uppercase italic tracking-tighter leading-none">Cloud Storage</h1>
+                    <p class="text-[9px] font-black text-[#facc15] tracking-[0.4em] uppercase mt-2">V.02</p>
+                </div>
+                <button id="btnLogout" class="text-white/30"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </header>
+
+        <main class="px-6 -mt-10 relative z-20">
+            <div class="storage-card">
+                <div class="flex items-center justify-between mb-6 px-2">
+                    <span class="text-[10px] font-black text-[#053a6f] uppercase tracking-widest">Upload</span>
+                    <i class="fa-solid fa-cloud-arrow-up text-[#053a6f] opacity-20"></i>
+                </div>
+
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" id="fileInput" class="hidden" accept="image/*,video/*">
+                    <div class="w-16 h-16 bg-white rounded-2xl shadow-md flex items-center justify-center mb-4 text-[#053a6f]">
+                        <i class="fa-solid fa-plus text-xl"></i>
+                    </div>
+                    <p class="text-sm font-black text-[#053a6f]">Pilih File</p>
+                    <p class="text-[9px] text-gray-400 mt-1 font-bold">FOTO ATAU VIDEO (MAX 10MB)</p>
+                </div>
+
+                <div id="uploadStatus" class="mt-6 hidden">
+                    <div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden mb-2">
+                        <div id="progressBar" class="bg-[#053a6f] h-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p id="statusText" class="text-[8px] font-black text-[#053a6f] uppercase text-center animate-pulse tracking-widest">Sinkronisasi Server...</p>
+                </div>
+            </div>
+
+            <div id="successCard" class="hidden transform transition-all duration-500 scale-95 opacity-0">
+                <div class="storage-card border-l-4 border-l-[#facc15]">
+                    <div class="flex gap-4 items-start">
+                        <div class="bg-yellow-50 p-3 rounded-xl text-[#053a6f]">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-[#053a6f] uppercase tracking-tight">Berhasil Disimpan!</h4>
+                            <p class="text-[11px] text-slate-500 leading-relaxed mt-1 font-semibold">
+                                Foto/video berhasil tersimpan ke sistem cloud.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <a href="https://boyoke.pegle.com" class="nav-clean">
+        <i class="fa-solid fa-house-chimney"></i>
+        <span class="text-[#facc15] text-[10px] font-extrabold uppercase tracking-widest">Home</span>
+    </a>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyApuZ1gyMPnKSPnMLmqR-Nh1NPJ-blZ1Zs",
+            authDomain: "pitulascom.firebaseapp.com",
+            projectId: "pitulascom",
+            storageBucket: "pitulascom.firebasestorage.app",
+            messagingSenderId: "57896978619",
+            appId: "1:57896978619:web:81503dfde8d568e35d819e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // URL Google Apps Script Anda
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxmYhZ-5C74fQaLMkAgEMjaXTiJiFzMKyzfR0MN6RTkajXWjXyXywvTft8k9S-w32CZ/exec";
+
+        // Auth Logic
+        document.getElementById('btnLogin').onclick = () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            if(!email || !pass) return alert("Isi email & password!");
+            signInWithEmailAndPassword(auth, email, pass).catch(err => alert("Akses Ditolak: " + err.message));
+        };
+
+        document.getElementById('btnLogout').onclick = () => signOut(auth);
+
+        onAuthStateChanged(auth, (user) => {
+            document.getElementById('mainBody').className = user ? 'auth-active' : 'unauth';
+        });
+
+        // Upload Logic
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const statusBox = document.getElementById('uploadStatus');
+        const pBar = document.getElementById('progressBar');
+        const sCard = document.getElementById('successCard');
+        const statusText = document.getElementById('statusText');
+
+        dropZone.onclick = () => fileInput.click();
+
+        fileInput.onchange = () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Batasi ukuran file (GAS punya limit sekitar 10-50MB total payload)
+            if (file.size > 15 * 1024 * 1024) { 
+                alert("File terlalu besar (Maks 15MB)!");
+                return;
+            }
+
+            const reader = new FileReader();
+            sCard.classList.add('hidden', 'scale-95', 'opacity-0');
+            statusBox.classList.remove('hidden');
+            statusText.innerText = "Membaca File...";
+            pBar.style.width = "20%";
+            
+            reader.onload = (e) => {
+                pBar.style.width = "50%";
+                statusText.innerText = "Mengunggah ke Cloud...";
+                
+                const base64 = e.target.result.split(',')[1];
+                
+                // Gunakan URLSearchParams untuk menghindari masalah CORS JSON Preflight
+                const params = new URLSearchParams();
+                params.append("base64", base64);
+                params.append("type", file.type);
+                params.append("name", "V2_" + Date.now() + "_" + file.name);
+
+                fetch(scriptURL, {
+                    method: "POST",
+                    body: params,
+                    mode: "no-cors" // Memungkinkan request lintas domain tanpa ribet
+                })
+                .then(() => {
+                    // Karena no-cors, kita tidak bisa baca body response, 
+                    // tapi jika tidak masuk ke .catch, berarti request terkirim.
+                    pBar.style.width = "100%";
+                    statusText.innerText = "Selesai!";
+                    
+                    setTimeout(() => {
+                        statusBox.classList.add('hidden');
+                        pBar.style.width = "0%";
+                        sCard.classList.remove('hidden');
+                        setTimeout(() => {
+                            sCard.classList.remove('scale-95', 'opacity-0');
+                            sCard.classList.add('scale-100', 'opacity-100');
+                        }, 50);
+                    }, 800);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert("Gagal mengunggah file. Cek koneksi.");
+                    statusBox.classList.add('hidden');
+                });
+            };
+            
+            reader.onerror = () => alert("Gagal membaca file.");
+            reader.readAsDataURL(file);
+        };
+    </script>
+</body>
+      </html>
